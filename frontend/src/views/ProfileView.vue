@@ -1,11 +1,16 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { userService } from '@/services/userService.js'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
+import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
 const toast = useToast()
+const router = useRouter()
+
+const AVATARS = ['👩‍🌾','👨‍🌾','🧑‍🌾','👴','👵','🧔','🌱','🌻','🍅','🐝','🌵','🦋','🍓','🍎','🐶']
+const DEFAULT_AVATAR = '🐝'
 
 const profile = ref(null)
 const profileLoading = ref(false)
@@ -14,12 +19,20 @@ const profileError = ref('')
 const city = ref('')
 const countryCode = ref('')
 const hemisphere = ref('NORTE')
+const avatar = ref(DEFAULT_AVATAR)
+const showAvatarPicker = ref(false)
 
 const pwCurrent = ref('')
 const pwNew = ref('')
 const pwConfirm = ref('')
 const pwLoading = ref(false)
 const pwError = ref('')
+
+const showDeleteForm = ref(false)
+const deleteUsername = ref('')
+const deleteLoading = ref(false)
+const deleteError = ref('')
+const canDelete = computed(() => deleteUsername.value === authStore.user?.username)
 
 onMounted(async () => {
   profileLoading.value = true
@@ -28,6 +41,7 @@ onMounted(async () => {
     city.value = profile.value.city || ''
     countryCode.value = profile.value.countryCode || ''
     hemisphere.value = profile.value.hemisphere || 'NORTE'
+    avatar.value = profile.value.avatar || DEFAULT_AVATAR
   } catch {
     profileError.value = 'No se pudo cargar el perfil'
   } finally {
@@ -42,15 +56,20 @@ async function saveProfile() {
     const payload = {
       city: city.value,
       countryCode: countryCode.value.toUpperCase() || null,
-      hemisphere: hemisphere.value
+      hemisphere: hemisphere.value,
+      avatar: avatar.value
     }
     profile.value = await userService.updateProfile(payload)
-    authStore.user = {
+    const updated = {
       ...authStore.user,
       city: profile.value.city,
       countryCode: profile.value.countryCode,
-      hemisphere: profile.value.hemisphere
+      hemisphere: profile.value.hemisphere,
+      avatar: profile.value.avatar
     }
+    authStore.user = updated
+    localStorage.setItem('user', JSON.stringify(updated))
+    showAvatarPicker.value = false
     toast.success('Perfil actualizado correctamente')
   } catch (e) {
     profileError.value = e.response?.data?.message || e.response?.data?.errors?.countryCode || 'Error al guardar el perfil'
@@ -78,6 +97,19 @@ async function changePassword() {
     pwLoading.value = false
   }
 }
+
+async function confirmDeleteAccount() {
+  deleteError.value = ''
+  deleteLoading.value = true
+  try {
+    await userService.deleteAccount(deleteUsername.value)
+    authStore.logout()
+    router.push('/login')
+  } catch (e) {
+    deleteError.value = e.response?.data?.message || 'Error al eliminar la cuenta'
+    deleteLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -89,17 +121,49 @@ async function changePassword() {
     </div>
 
     <template v-else-if="profile">
+      <!-- Cabecera avatar -->
+      <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+        <div class="text-center py-4" style="background: linear-gradient(135deg, #198754, #20c997)">
+          <div
+            class="mx-auto mb-2 d-flex align-items-center justify-content-center"
+            style="font-size:3.5rem; width:80px; height:80px; background:rgba(255,255,255,0.2); border-radius:50%; cursor:pointer"
+            @click="showAvatarPicker = !showAvatarPicker"
+            :title="showAvatarPicker ? 'Cerrar selector' : 'Cambiar avatar'"
+          >{{ avatar }}</div>
+          <div class="text-white-50 small mb-1">Haz clic para cambiar</div>
+          <div class="fw-bold text-white">{{ profile.username }}</div>
+          <div class="text-white-50 small">
+            <span :class="profile.role === 'ADMIN' ? 'badge bg-warning text-dark' : 'badge bg-light text-secondary'">{{ profile.role }}</span>
+          </div>
+        </div>
+
+        <!-- Picker de avatar (visible al hacer clic en el emoji) -->
+        <div v-if="showAvatarPicker" class="card-body border-top bg-light">
+          <p class="small text-muted mb-2 fw-semibold">Elige tu avatar:</p>
+          <div class="d-flex flex-wrap gap-2">
+            <span
+              v-for="emoji in AVATARS"
+              :key="emoji"
+              @click="avatar = emoji"
+              class="rounded-2 p-1"
+              style="font-size:1.8rem; cursor:pointer; border: 2px solid; transition: border-color 0.15s"
+              :style="avatar === emoji ? 'border-color: #198754; background:#fff' : 'border-color: #dee2e6; background:#fff'"
+            >{{ emoji }}</span>
+          </div>
+          <p class="small text-muted mt-2 mb-0">Pulsa <strong>Guardar cambios</strong> para confirmar.</p>
+        </div>
+      </div>
+
       <!-- Info básica -->
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
           <h5 class="card-title mb-3">Información de la cuenta</h5>
-          <div class="row mb-2">
-            <div class="col-4 text-muted">Usuario</div>
-            <div class="col-8 fw-semibold">{{ profile.username }}</div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-4 text-muted">Email</div>
-            <div class="col-8">{{ profile.email }}</div>
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <span style="font-size:2rem">{{ avatar }}</span>
+            <div>
+              <div class="fw-semibold">{{ profile.username }}</div>
+              <div class="text-muted small">{{ profile.email }}</div>
+            </div>
           </div>
           <div class="row">
             <div class="col-4 text-muted">Rol</div>
@@ -159,7 +223,7 @@ async function changePassword() {
       </div>
 
       <!-- Cambiar contraseña -->
-      <div class="card border-0 shadow-sm">
+      <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
           <h5 class="card-title mb-3">Cambiar contraseña</h5>
           <div v-if="pwError" class="alert alert-danger py-2">{{ pwError }}</div>
@@ -184,6 +248,53 @@ async function changePassword() {
           </form>
         </div>
       </div>
+
+      <!-- Zona de peligro -->
+      <div class="card border-0 shadow-sm mb-4" style="border: 1px solid #f5c2c7 !important">
+        <div class="card-body">
+          <h5 class="card-title mb-2 text-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>Zona de peligro
+          </h5>
+          <p class="text-muted small mb-3">
+            Eliminar tu cuenta borrará permanentemente todos tus huertos, parcelas, cultivos y cosechas.
+            <strong>Esta acción es irreversible.</strong>
+          </p>
+          <button
+            v-if="!showDeleteForm"
+            class="btn btn-outline-danger btn-sm"
+            @click="showDeleteForm = true"
+          >Eliminar cuenta</button>
+
+          <div v-if="showDeleteForm">
+            <div v-if="deleteError" class="alert alert-danger py-2 small">{{ deleteError }}</div>
+            <p class="small mb-2">
+              Escribe tu usuario <strong>«{{ authStore.user?.username }}»</strong> para confirmar:
+            </p>
+            <input
+              v-model="deleteUsername"
+              type="text"
+              class="form-control form-control-sm mb-3"
+              placeholder="Tu nombre de usuario"
+              autocomplete="off"
+            />
+            <div class="d-flex gap-2">
+              <button
+                class="btn btn-danger btn-sm"
+                :disabled="!canDelete || deleteLoading"
+                @click="confirmDeleteAccount"
+              >
+                <span v-if="deleteLoading" class="spinner-border spinner-border-sm me-1"></span>
+                Confirmar eliminación
+              </button>
+              <button
+                class="btn btn-outline-secondary btn-sm"
+                @click="showDeleteForm = false; deleteUsername = ''; deleteError = ''"
+              >Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </template>
 
     <div v-else-if="profileError" class="alert alert-danger">{{ profileError }}</div>

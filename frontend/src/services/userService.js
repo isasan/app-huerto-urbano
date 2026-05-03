@@ -13,5 +13,9 @@ export const userService = {
 
   async changePassword(payload) {
     await api.put('/users/me/password', payload)
+  },
+
+  async deleteAccount(username) {
+    await api.delete('/users/me', { data: { username } })
   }
 }
