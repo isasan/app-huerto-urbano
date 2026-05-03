@@ -88,7 +88,7 @@ function logout() {
             :aria-label="`Menú de usuario: ${authStore.user?.username}`"
           >
             <span class="user-avatar" aria-hidden="true">
-              {{ authStore.user?.username?.charAt(0).toUpperCase() }}
+              {{ authStore.user?.avatar ?? '🐝' }}
             </span>
             <span class="user-name d-none d-sm-inline">{{ authStore.user?.username }}</span>
             <i class="bi bi-chevron-down user-chevron" aria-hidden="true"></i>
@@ -264,14 +264,11 @@ function logout() {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--green-600), var(--green-400));
-  color: white;
+  background: var(--stone-100);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   flex-shrink: 0;
 }
 .user-name {
