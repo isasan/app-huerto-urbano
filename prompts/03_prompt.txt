@@ -1,0 +1,79 @@
+Continuamos con HuertoApp. Autenticación implementada y funcional.
+Ahora implementa el módulo de Huertos (Gardens) y Parcelas (Plots).
+
+## TAREA BACKEND
+
+### GardenService.java
+- getAllByUser(userId): devuelve solo los huertos del usuario autenticado
+- getById(id, userId): valida que el huerto pertenece al usuario
+- create(GardenRequest, userId): crea huerto asociado al usuario
+- update(id, GardenRequest, userId): valida propiedad antes de actualizar
+- delete(id, userId): valida propiedad antes de eliminar
+- Lanzar ResourceNotFoundException si no existe
+- Lanzar UnauthorizedException si no es propietario
+
+### GardenController.java
+- GET    /api/gardens          → lista huertos del usuario autenticado
+- GET    /api/gardens/{id}     → detalle de un huerto
+- POST   /api/gardens          → crear huerto
+- PUT    /api/gardens/{id}     → actualizar huerto
+- DELETE /api/gardens/{id}     → eliminar huerto
+- Extraer userId del JWT en cada endpoint (no del body)
+
+### PlotService.java y PlotController.java
+- CRUD completo bajo /api/gardens/{gardenId}/plots
+- Validar que el gardenId pertenece al usuario antes de operar
+- GET    /api/gardens/{gardenId}/plots
+- POST   /api/gardens/{gardenId}/plots
+- PUT    /api/gardens/{gardenId}/plots/{plotId}
+- DELETE /api/gardens/{gardenId}/plots/{plotId}
+
+### DTOs necesarios
+- GardenRequest: name, description, location, sizeM2
+- GardenResponse: todos los campos + totalPlots (count)
+- PlotRequest: name, sizeM2, soilType
+- PlotResponse: todos los campos
+
+## TAREA FRONTEND
+
+### services/gardenService.js
+- getAll(): GET /api/gardens
+- getById(id): GET /api/gardens/{id}
+- create(data): POST /api/gardens
+- update(id, data): PUT /api/gardens/{id}
+- remove(id): DELETE /api/gardens/{id}
+- getPlots(gardenId): GET /api/gardens/{gardenId}/plots
+- createPlot(gardenId, data): POST /api/gardens/{gardenId}/plots
+- deletePlot(gardenId, plotId): DELETE /api/gardens/{gardenId}/plots/{plotId}
+
+### stores/garden.js (Pinia)
+- Estado: gardens[], currentGarden, plots[], loading, error
+- Actions: fetchGardens, fetchGarden, createGarden, updateGarden, deleteGarden
+
+### GardensView.vue
+- Listado de huertos en tarjetas (GardenCard.vue)
+- Botón crear nuevo huerto → abre modal con GardenForm.vue
+- Cada tarjeta muestra: nombre, ubicación, tamaño, número de parcelas
+- Botones editar y eliminar con confirmación
+
+### GardenCard.vue
+- Tarjeta Bootstrap con info del huerto
+- Click en la tarjeta navega a /gardens/{id}
+
+### GardenForm.vue
+- Formulario en modal Bootstrap
+- Campos: nombre, descripción, ubicación, tamaño (m²)
+- Modo crear y modo editar (recibe garden como prop opcional)
+- Emit 'saved' al guardar correctamente
+
+### GardenDetailView.vue
+- Cabecera con info del huerto y botón editar
+- Sección de parcelas: listado + botón añadir parcela
+- Cada parcela muestra: nombre, tamaño, tipo de suelo
+- Modal para crear/editar parcela
+- Botón para navegar a los cultivos de cada parcela
+
+## CONSIDERACIONES
+- Confirmación antes de eliminar (modal o confirm nativo)
+- Feedback visual de operaciones (toast o alert Bootstrap)
+- Estado vacío: mensaje cuando no hay huertos ni parcelas

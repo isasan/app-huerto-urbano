@@ -1,0 +1,94 @@
+<script setup>
+import { ref, watch } from 'vue'
+import PlantCard from './PlantCard.vue'
+import PlantDetailModal from './PlantDetailModal.vue'
+import { calendarService } from '@/services/calendarService.js'
+import { plantDetailService } from '@/services/plantDetailService.js'
+
+const props = defineProps({
+  hemisphere: { type: String, default: 'NORTE' },
+  month: { type: Number, required: true }
+})
+
+const plants = ref([])
+const detailsMap = ref({})   // { "Tomate": PlantDetailResponse, ... }
+const loading = ref(false)
+const error = ref(null)
+
+const showModal = ref(false)
+const selectedPlant = ref(null)   // { name, emoji } from PlantCard
+const selectedDetail = ref(null)  // PlantDetailResponse | null
+
+async function loadPlants() {
+  loading.value = true
+  error.value = null
+  try {
+    const [calendarData, details] = await Promise.all([
+      calendarService.getPlants(props.hemisphere, props.month),
+      plantDetailService.getAll()
+    ])
+    plants.value = calendarData
+    detailsMap.value = Object.fromEntries(details.map(d => [d.plantName, d]))
+  } catch {
+    error.value = 'No se pudo cargar el calendario. Inténtalo de nuevo.'
+  } finally {
+    loading.value = false
+  }
+}
+
+watch([() => props.hemisphere, () => props.month], loadPlants, { immediate: true })
+
+function openDetail(plant) {
+  selectedPlant.value = plant
+  // Static plants use detailsMap; DB plants carry detail fields inline
+  const fromMap = detailsMap.value[plant.name]
+  if (fromMap) {
+    selectedDetail.value = fromMap
+  } else if (plant.latinName || plant.wateringFrequency || plant.pests || plant.wikipediaUrl) {
+    selectedDetail.value = {
+      plantName: plant.name,
+      latinName: plant.latinName ?? null,
+      wateringFrequency: plant.wateringFrequency ?? null,
+      pests: plant.pests ?? null,
+      wikipediaUrl: plant.wikipediaUrl ?? null
+    }
+  } else {
+    selectedDetail.value = null
+  }
+  showModal.value = true
+}
+</script>
+
+<template>
+  <div>
+    <div v-if="loading" class="text-center py-5">
+      <div class="spinner-border text-success" role="status"></div>
+      <p class="text-muted mt-2 small">Cargando plantas...</p>
+    </div>
+
+    <div v-else-if="error" class="alert alert-danger">{{ error }}</div>
+
+    <div v-else-if="plants.length === 0" class="text-center py-5">
+      <span style="font-size: 3rem;">🌾</span>
+      <p class="text-muted mt-2">No hay actividad recomendada para este mes y hemisferio.</p>
+      <p class="text-muted small">Prueba con otro mes o cambia el hemisferio.</p>
+    </div>
+
+    <div v-else class="row g-3">
+      <div
+        v-for="plant in plants"
+        :key="plant.name"
+        class="col-12 col-sm-6 col-md-4 col-xl-3"
+      >
+        <PlantCard :plant="plant" @click-detail="openDetail" />
+      </div>
+    </div>
+
+    <PlantDetailModal
+      v-if="showModal"
+      :plant="selectedPlant"
+      :detail="selectedDetail"
+      @close="showModal = false"
+    />
+  </div>
+</template>

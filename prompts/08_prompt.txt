@@ -1,0 +1,37 @@
+Continuamos con HuertoApp. Ahora implementa el panel de administración.
+
+## TAREA BACKEND
+
+### AdminController.java → solo accesible con rol ADMIN
+- GET  /api/admin/users              → listado de todos los usuarios
+- GET  /api/admin/users/{id}         → detalle de un usuario
+- PUT  /api/admin/users/{id}/role    → cambiar rol (USER ↔ ADMIN)
+- DELETE /api/admin/users/{id}       → eliminar usuario y todos sus datos
+- GET  /api/admin/stats              → estadísticas globales de la app:
+    totalUsers, totalGardens, totalCrops, totalHarvests, totalTasks
+
+## TAREA FRONTEND
+
+### AdminView.vue
+Accesible solo con rol ADMIN. Dos secciones:
+
+#### Sección Estadísticas
+- Tarjetas con totales globales: usuarios, huertos, cultivos, cosechas, tareas
+- Llamada a GET /api/admin/stats
+
+#### Sección Usuarios
+- Tabla con: username, email, rol, ciudad, hemisferio, fecha registro
+- Botón cambiar rol (USER ↔ ADMIN) con confirmación
+- Botón eliminar usuario con confirmación (doble: "¿Seguro?" → "¿Muy seguro?")
+- Indicador visual del usuario actualmente autenticado (no se puede eliminar a sí mismo)
+
+### Protección en Router
+- Navigation guard en /admin: verificar rol ADMIN desde el store de auth
+- Si no es ADMIN: redirigir a /dashboard con mensaje de acceso denegado
+
+## CONSIDERACIONES
+- El backend debe validar el rol ADMIN en cada endpoint de /api/admin/**
+  independientemente del frontend (nunca confiar solo en el guard del router)
+- Al eliminar un usuario eliminar en cascada: gardens → plots → crops → tasks → harvests
+  Configurar correctamente el cascade en las entidades JPA
+- Un ADMIN no puede eliminarse a sí mismo ni cambiar su propio rol

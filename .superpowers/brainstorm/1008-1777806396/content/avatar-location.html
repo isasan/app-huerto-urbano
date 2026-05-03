@@ -1,0 +1,66 @@
+<h2>¿Dónde aparece el avatar del usuario?</h2>
+<p class="subtitle">Tres ubicaciones posibles — puedes elegir más de una si quieres combinación</p>
+
+<div class="cards" data-multiselect>
+
+  <div class="card" data-choice="top" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f8f9fa;border-radius:8px;margin-bottom:8px">
+      <div style="text-align:center;padding:12px 0">
+        <div style="font-size:3rem;margin-bottom:8px">👩‍🌾</div>
+        <div style="font-weight:600;font-size:1rem">maria_garcia</div>
+        <div style="font-size:0.8rem;color:#6c757d">USER</div>
+      </div>
+      <div style="background:#fff;border-radius:6px;padding:10px;margin-top:8px;font-size:0.8rem;color:#6c757d">
+        ── Card: Información de la cuenta ──<br>
+        ── Card: Ubicación y hemisferio ──<br>
+        ── Card: Cambiar contraseña ──
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Cabecera de la página de perfil</h3>
+      <p>El avatar aparece grande en lo alto de <code>/profile</code>, con nombre y rol. Solo visible en esa página.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="card" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f8f9fa;border-radius:8px;margin-bottom:8px">
+      <div style="background:#fff;border-radius:6px;padding:12px;font-size:0.8rem">
+        <div style="font-weight:600;margin-bottom:8px">Información de la cuenta</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+          <div style="font-size:2rem">👩‍🌾</div>
+          <div>
+            <div style="font-weight:500">maria_garcia</div>
+            <div style="color:#6c757d;font-size:0.75rem">maria@email.com</div>
+          </div>
+        </div>
+        <div style="color:#6c757d;font-size:0.75rem">Rol: <span style="background:#6c757d;color:#fff;border-radius:4px;padding:1px 6px">USER</span></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Dentro de la card "Información de la cuenta"</h3>
+      <p>El avatar aparece junto al nombre/email dentro de la card existente. Compacto e integrado.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="navbar" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f8f9fa;border-radius:8px;margin-bottom:8px">
+      <div style="background:#198754;border-radius:6px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:0.8rem">
+        <span>🌿 HuertoApp</span>
+        <div style="display:flex;gap:12px;align-items:center">
+          <span>Dashboard</span>
+          <span>Huertos</span>
+          <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border-radius:20px;padding:4px 10px">
+            <span style="font-size:1.2rem">👩‍🌾</span>
+            <span>maria</span>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:0.75rem;color:#6c757d;text-align:center;margin-top:8px">visible en todas las páginas</div>
+    </div>
+    <div class="card-body">
+      <h3>C — En la barra de navegación</h3>
+      <p>El avatar aparece en el navbar junto al nombre del usuario. Visible en toda la app.</p>
+    </div>
+  </div>
+
+</div>

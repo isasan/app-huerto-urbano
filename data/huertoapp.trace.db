@@ -1,0 +1,4 @@
+2026-05-01 22:49:16.279870+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "[*]PLANTED_DATE"; se esperaba "PREPARE"
+Syntax error in SQL statement "[*]PLANTED_DATE"; expected "PREPARE"; SQL statement:
+PLANTED_DATE [42001-224]

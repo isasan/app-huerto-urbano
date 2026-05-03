@@ -1,0 +1,65 @@
+Continuamos con HuertoApp. Huertos y parcelas funcionando.
+Ahora implementa el módulo de Cultivos (Crops) y Tareas (Tasks).
+
+## TAREA BACKEND
+
+### CropService.java y CropController.java
+- CRUD bajo /api/plots/{plotId}/crops
+- Validar que plotId → gardenId → userId antes de operar
+- GET    /api/plots/{plotId}/crops
+- POST   /api/plots/{plotId}/crops
+- PUT    /api/plots/{plotId}/crops/{cropId}
+- DELETE /api/plots/{plotId}/crops/{cropId}
+- GET    /api/crops/user         → todos los cultivos del usuario (para dashboard)
+- CropRequest: plantName, variety, plantedDate, expectedHarvestDate, notes
+- CropResponse: todos los campos + status calculado automáticamente según fecha
+
+### TaskService.java y TaskController.java
+- CRUD bajo /api/tasks
+- Filtrar siempre por userId del token
+- GET    /api/tasks              → todas las tareas del usuario
+- GET    /api/tasks?gardenId=X  → tareas de un huerto específico
+- GET    /api/tasks?pending=true → solo tareas pendientes
+- POST   /api/tasks
+- PUT    /api/tasks/{id}
+- PATCH  /api/tasks/{id}/complete → marcar como completada
+- DELETE /api/tasks/{id}
+- TaskRequest: title, type, dueDate, notes, cropId (opcional), gardenId
+- TaskResponse: todos los campos + gardenName + cropName (si aplica)
+
+## TAREA FRONTEND
+
+### services/cropService.js y services/taskService.js
+- CRUD completo mapeado a los endpoints del backend
+
+### CropList.vue
+- Listado de cultivos de una parcela
+- Muestra: nombre planta, variedad, fecha siembra, fecha cosecha esperada, estado (badge de color)
+- Estados con colores: PLANTED(azul), GROWING(verde), READY(amarillo), HARVESTED(gris)
+- Botón añadir cultivo
+
+### CropForm.vue
+- Campos: nombre planta, variedad, fecha siembra, fecha cosecha esperada, notas
+- Date pickers nativos HTML5
+
+### TasksView.vue
+- Vista principal de tareas
+- Filtros: todas / pendientes / completadas / por tipo
+- Ordenadas por dueDate ascendente
+- Tareas vencidas resaltadas en rojo
+
+### TaskBoard.vue
+- Agrupación visual por tipo (RIEGO, FERTILIZAR, PODAR, TRATAR, OTRO)
+- Cada grupo con su icono emoji representativo
+- Contador de tareas pendientes por tipo
+
+### TaskItem.vue
+- Checkbox para marcar completada (PATCH al endpoint)
+- Mostrar: título, tipo, fecha límite, huerto asociado
+- Tareas completadas con estilo tachado
+- Botones editar y eliminar
+
+## CONSIDERACIONES
+- El status del Crop se calcula en backend comparando expectedHarvestDate con LocalDate.now()
+- Las tareas vencidas son aquellas con dueDate < hoy y completed = false
+- Feedback inmediato al marcar tarea como completada (optimistic update)

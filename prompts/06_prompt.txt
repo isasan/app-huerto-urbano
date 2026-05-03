@@ -1,0 +1,55 @@
+Continuamos con HuertoApp. Ahora implementa la integración con OpenWeatherMap.
+
+## TAREA BACKEND
+
+### WeatherService.java
+- Llamar a OpenWeatherMap API: GET https://api.openweathermap.org/data/2.5/weather
+- Parámetros: q={city}, appid={apiKey}, units=metric, lang=es
+- Implementar caché en memoria de 30 minutos por ciudad (Map<String, CachedWeather>)
+- CachedWeather: datos + timestamp, invalidar si han pasado 30 min
+- Devolver WeatherResponse con: ciudad, temperatura, sensación térmica,
+  descripción, icono, humedad, velocidad viento, visibilidad
+- Manejar ciudad no encontrada (404 de OpenWeatherMap → error descriptivo)
+
+### WeatherController.java
+- GET /api/weather?city={city} → WeatherResponse
+- Si city está vacío → usar la ciudad del usuario autenticado (del token)
+- Si el usuario no tiene ciudad configurada → error descriptivo
+
+### UserController.java (nuevo o añadir a AuthController)
+- GET  /api/users/me           → perfil del usuario autenticado
+- PUT  /api/users/me           → actualizar ciudad y hemisferio
+- PUT  /api/users/me/password  → cambiar contraseña (requiere password actual)
+
+## TAREA FRONTEND
+
+### WeatherWidget.vue
+- Mostrar: temperatura, descripción, icono del tiempo, humedad, viento
+- Usar iconos de OpenWeatherMap: https://openweathermap.org/img/wn/{icon}@2x.png
+- Si no hay ciudad configurada: mostrar mensaje con link a configurar perfil
+- Actualizar automáticamente cada 30 minutos (setInterval)
+- Loading skeleton mientras carga
+
+### services/weatherService.js
+- getWeather(city): GET /api/weather?city={city}
+- getMyWeather(): GET /api/weather (usa ciudad del usuario)
+
+### stores/weather.js (Pinia)
+- Estado: weatherData, loading, error, lastUpdated
+- Action: fetchWeather(city?)
+
+### ProfileView.vue (nueva vista)
+- Formulario para actualizar: ciudad y hemisferio
+- Sección para cambiar contraseña (campo password actual + nuevo + confirmación)
+- Añadir ruta /profile al router (auth requerida)
+- Añadir enlace en el navbar (menú de usuario)
+
+### AppNavbar.vue — actualizar
+- Mostrar username del usuario autenticado
+- Dropdown con opciones: Mi Perfil, Cerrar Sesión
+- Indicador visual del rol ADMIN
+
+## CONSIDERACIONES
+- La API key de OpenWeatherMap debe estar SOLO en el backend, nunca expuesta al frontend
+- El free tier tiene límite de 60 llamadas/minuto: la caché de 30min es suficiente
+- Iconos disponibles en: https://openweathermap.org/weather-conditions

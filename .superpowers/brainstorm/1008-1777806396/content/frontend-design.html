@@ -1,0 +1,103 @@
+<h2>Diseño Frontend — ProfileView.vue</h2>
+<p class="subtitle">Así quedaría la página de perfil con las dos nuevas funcionalidades</p>
+
+<div class="mockup">
+  <div class="mockup-header">📄 /profile — Layout completo</div>
+  <div class="mockup-body" style="padding:0">
+
+    <!-- Cabecera avatar -->
+    <div style="background:linear-gradient(135deg,#198754,#20c997);padding:28px 24px;text-align:center;color:#fff">
+      <div style="font-size:4rem;margin-bottom:8px;cursor:pointer;display:inline-block;background:rgba(255,255,255,0.2);border-radius:50%;width:80px;height:80px;line-height:80px">👩‍🌾</div>
+      <div style="font-size:0.75rem;opacity:0.85;margin-bottom:6px">Haz clic para cambiar</div>
+      <div style="font-weight:700;font-size:1.2rem">maria_garcia</div>
+      <div style="font-size:0.8rem;opacity:0.8">USER · Miembro desde ene 2025</div>
+    </div>
+
+    <!-- Picker de avatar (oculto por defecto, se expande al hacer clic) -->
+    <div style="background:#f8f9fa;border-bottom:1px solid #dee2e6;padding:12px 16px">
+      <div style="font-size:0.8rem;color:#6c757d;margin-bottom:8px;font-weight:500">Elige tu avatar:</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #198754;border-radius:8px;padding:4px 8px">👩‍🌾</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">👨‍🌾</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">🧑‍🌾</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">👴</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">👵</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">🧔</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">🌱</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">🌻</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">🍅</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">🐝</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">🌵</span>
+        <span style="font-size:1.8rem;cursor:pointer;background:#fff;border:2px solid #dee2e6;border-radius:8px;padding:4px 8px">🦋</span>
+      </div>
+      <div style="margin-top:10px;font-size:0.75rem;color:#6c757d">El avatar se guarda al pulsar <strong>Guardar cambios</strong> en la sección de ubicación — o bien con un botón propio aquí.</div>
+    </div>
+
+    <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+
+      <!-- Card info cuenta -->
+      <div style="background:#fff;border-radius:8px;padding:14px;border:1px solid #dee2e6">
+        <div style="font-weight:600;margin-bottom:10px;font-size:0.9rem">Información de la cuenta</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <span style="font-size:2rem">👩‍🌾</span>
+          <div>
+            <div style="font-weight:500;font-size:0.85rem">maria_garcia</div>
+            <div style="font-size:0.75rem;color:#6c757d">maria@email.com</div>
+          </div>
+        </div>
+        <div style="font-size:0.8rem;color:#6c757d">Rol: <span style="background:#6c757d;color:#fff;font-size:0.7rem;padding:1px 7px;border-radius:10px">USER</span></div>
+      </div>
+
+      <!-- Card ubicación (resumida) -->
+      <div style="background:#fff;border-radius:8px;padding:14px;border:1px solid #dee2e6">
+        <div style="font-weight:600;margin-bottom:6px;font-size:0.9rem">Ubicación y hemisferio</div>
+        <div style="font-size:0.8rem;color:#6c757d">Ciudad, código país, hemisferio + <strong>avatar</strong> → botón Guardar cambios</div>
+      </div>
+
+      <!-- Card contraseña (resumida) -->
+      <div style="background:#fff;border-radius:8px;padding:14px;border:1px solid #dee2e6">
+        <div style="font-weight:600;margin-bottom:6px;font-size:0.9rem">Cambiar contraseña</div>
+        <div style="font-size:0.8rem;color:#6c757d">Sin cambios</div>
+      </div>
+
+      <!-- Card zona peligro -->
+      <div style="background:#fff;border-radius:8px;padding:14px;border:1px solid #f5c2c7">
+        <div style="font-weight:600;margin-bottom:6px;font-size:0.9rem;color:#dc3545">⚠️ Zona de peligro</div>
+        <div style="font-size:0.8rem;color:#6c757d;margin-bottom:10px">Eliminar tu cuenta borrará permanentemente todos tus huertos, parcelas, cultivos y cosechas. Esta acción es irreversible.</div>
+        <button style="background:#fff;border:1px solid #dc3545;color:#dc3545;border-radius:4px;padding:5px 14px;font-size:0.8rem">Eliminar cuenta</button>
+      </div>
+
+      <!-- Confirmación (aparece al hacer clic en Eliminar cuenta) -->
+      <div style="background:#fff2f2;border-radius:8px;padding:14px;border:1px solid #f5c2c7">
+        <div style="font-size:0.8rem;margin-bottom:8px;color:#495057">Escribe tu nombre de usuario <strong>maria_garcia</strong> para confirmar:</div>
+        <input placeholder="Escribe tu usuario..." style="width:100%;border:1px solid #dee2e6;border-radius:4px;padding:5px 8px;font-size:0.8rem;box-sizing:border-box;margin-bottom:8px">
+        <div style="display:flex;gap:8px">
+          <button style="background:#dc3545;color:#fff;border:none;border-radius:4px;padding:5px 14px;font-size:0.8rem;opacity:0.5">Confirmar eliminación</button>
+          <button style="background:#fff;border:1px solid #6c757d;color:#6c757d;border-radius:4px;padding:5px 14px;font-size:0.8rem">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:24px">
+<h3>Navbar — cambio</h3>
+<div class="mockup">
+  <div class="mockup-header">🧭 AppNavbar.vue</div>
+  <div class="mockup-body">
+    <div style="background:#198754;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:0.85rem;border-radius:6px">
+      <span>🌿 <strong>HuertoApp</strong></span>
+      <div style="display:flex;gap:16px;align-items:center">
+        <span>Dashboard</span>
+        <span>Mis Huertos</span>
+        <a style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border-radius:20px;padding:4px 12px;color:#fff;text-decoration:none;cursor:pointer">
+          <span style="font-size:1.3rem">👩‍🌾</span>
+          <span>maria</span>
+        </a>
+      </div>
+    </div>
+    <div style="font-size:0.75rem;color:#6c757d;margin-top:8px">Si el usuario no tiene avatar → muestra <code>bi-person-circle</code> como fallback</div>
+  </div>
+</div>
+</div>
