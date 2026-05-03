@@ -51,6 +51,15 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void deleteAccount(String authenticated, String confirmed) {
+        if (!authenticated.equals(confirmed)) {
+            throw new BadCredentialsException("El nombre de usuario no coincide");
+        }
+        User user = findUser(authenticated);
+        userRepository.delete(user);
+    }
+
     private User findUser(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado: " + username));

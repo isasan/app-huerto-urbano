@@ -1,6 +1,7 @@
 package com.huertoapp.controller;
 
 import com.huertoapp.dto.request.ChangePasswordRequest;
+import com.huertoapp.dto.request.DeleteAccountRequest;
 import com.huertoapp.dto.request.UpdateProfileRequest;
 import com.huertoapp.dto.response.UserProfileResponse;
 import com.huertoapp.service.UserService;
@@ -43,6 +44,15 @@ public class UserController {
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody ChangePasswordRequest request) {
         userService.changePassword(userDetails.getUsername(), request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/me")
+    @Operation(summary = "Eliminar cuenta del usuario autenticado")
+    public ResponseEntity<Void> deleteAccount(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody DeleteAccountRequest request) {
+        userService.deleteAccount(userDetails.getUsername(), request.getUsername());
         return ResponseEntity.noContent().build();
     }
 }
