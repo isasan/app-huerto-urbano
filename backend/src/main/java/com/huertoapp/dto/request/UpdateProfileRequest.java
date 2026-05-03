@@ -14,4 +14,7 @@ public class UpdateProfileRequest {
     private String countryCode;
 
     private User.Hemisphere hemisphere;
+
+    @Size(max = 10, message = "Avatar inválido")
+    private String avatar;
 }

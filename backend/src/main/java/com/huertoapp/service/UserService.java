@@ -35,6 +35,9 @@ public class UserService {
         if (request.getHemisphere() != null) {
             user.setHemisphere(request.getHemisphere());
         }
+        if (request.getAvatar() != null) {
+            user.setAvatar(request.getAvatar().isBlank() ? null : request.getAvatar());
+        }
         return toResponse(userRepository.save(user));
     }
 
@@ -62,6 +65,7 @@ public class UserService {
                 .city(user.getCity())
                 .countryCode(user.getCountryCode())
                 .hemisphere(user.getHemisphere())
+                .avatar(user.getAvatar())
                 .createdAt(user.getCreatedAt())
                 .build();
     }

@@ -41,6 +41,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Hemisphere hemisphere;
 
+    @Column(length = 10)
+    private String avatar;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

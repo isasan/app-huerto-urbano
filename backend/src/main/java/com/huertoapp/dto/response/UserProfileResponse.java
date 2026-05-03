@@ -16,5 +16,6 @@ public class UserProfileResponse {
     private String city;
     private String countryCode;
     private User.Hemisphere hemisphere;
+    private String avatar;
     private LocalDateTime createdAt;
 }
