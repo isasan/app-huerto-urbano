@@ -107,6 +107,7 @@ async function confirmDeleteAccount() {
     router.push('/login')
   } catch (e) {
     deleteError.value = e.response?.data?.message || 'Error al eliminar la cuenta'
+  } finally {
     deleteLoading.value = false
   }
 }
