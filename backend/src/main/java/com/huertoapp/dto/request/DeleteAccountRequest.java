@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class DeleteAccountRequest {
-    @NotBlank
+    @NotBlank(message = "El nombre de usuario es obligatorio")
     private String username;
 }
