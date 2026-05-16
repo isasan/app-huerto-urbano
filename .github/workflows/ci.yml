@@ -65,3 +65,13 @@ jobs:
       - name: Lint
         run: npm run lint
         working-directory: frontend
+
+  commitlint:
+    name: Commitlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: wagoid/commitlint-github-action@v6
