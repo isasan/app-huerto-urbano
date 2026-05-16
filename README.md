@@ -67,8 +67,8 @@ Aplicación fullstack para gestionar huertos urbanos domésticos. Permite contro
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/huertoapp.git
-cd huertoapp
+git clone https://github.com/isasan/app-huerto-urbano.git
+cd app-huerto-urbano
 ```
 
 ### 2. Configurar el backend
@@ -80,8 +80,8 @@ cd backend
 Revisa `src/main/resources/application.properties`. Los valores por defecto funcionan sin ningún cambio:
 
 ```properties
-# JWT
-app.jwt.secret=tu_secreto_base64_aqui
+# JWT (24 h — cambiar en producción)
+app.jwt.secret=huertoapp-secret-key-change-in-production-min-256-bits
 app.jwt.expiration=86400000
 
 # Clima (Open-Meteo — sin API key)
@@ -201,20 +201,6 @@ huertoapp/
 - **Dashboard** — resumen en tiempo real con tareas del día, cultivos listos y últimas cosechas
 - **Panel de administración** — estadísticas globales y gestión de roles de usuario
 - **Responsive** — diseño adaptable a móvil desde 320px con menú hamburguesa
-
----
-
-## Roadmap — posibles mejoras futuras
-
-- [ ] **Notificaciones push** — alertar cuando una tarea vence o un cultivo está listo para cosechar
-- [ ] **Foto de cultivos** — subida de imágenes por parcela o cultivo
-- [ ] **Exportar datos** — PDF o CSV del historial de cosechas
-- [ ] **Compartir huerto** — modo colaborativo entre usuarios
-- [ ] **PWA** — instalación como app en móvil y soporte offline
-- [ ] **Migración a PostgreSQL** — para despliegue en producción
-- [ ] **Refresh tokens** — JWT de larga duración con rotación de tokens
-- [ ] **Tests E2E** — Playwright para flujos críticos (registro → crear huerto → cosechar)
-- [ ] **Dark mode** — tema oscuro con CSS variables
 
 ---
 

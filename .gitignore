@@ -1,0 +1,28 @@
+# ── IA / Claude Code ──────────────────────────────
+.claude/
+.superpowers/
+CLAUDE.md
+prompts/
+docs/superpowers/
+
+# ── Base de datos local H2 ────────────────────────
+data/*.db
+data/*.trace.db
+
+# ── Backend (Maven) ───────────────────────────────
+backend/target/
+*.class
+
+# ── Frontend (Node) ───────────────────────────────
+frontend/node_modules/
+frontend/dist/
+
+# ── IDE ───────────────────────────────────────────
+.idea/
+*.iml
+.vscode/
+
+# ── SO / sistema ──────────────────────────────────
+.DS_Store
+Thumbs.db
+*.stackdump
