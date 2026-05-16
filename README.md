@@ -8,6 +8,7 @@
 ![JWT](https://img.shields.io/badge/JWT-000000?style=flat&logo=jsonwebtokens&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Version](https://img.shields.io/github/v/tag/isasan/app-huerto-urbano?sort=semver&label=version&color=4CAF50)
+![CI](https://img.shields.io/github/actions/workflow/status/isasan/app-huerto-urbano/ci.yml?branch=develop&label=CI&logo=githubactions&logoColor=white)
 
 Aplicación fullstack para gestionar huertos urbanos domésticos. Permite controlar parcelas, cultivos, tareas de mantenimiento, registros de cosecha y consultar el clima en tiempo real.
 
@@ -151,6 +152,50 @@ Accesible en `http://localhost:8080/h2-console` con el servidor arrancado.
 Documentación interactiva de la API REST en `http://localhost:8080/swagger-ui.html`.
 
 Usa el botón **Authorize** para pegar tu Bearer token y probar endpoints protegidos.
+
+---
+
+## CI/CD
+
+El proyecto usa GitHub Actions con tres workflows y Dependabot para automatizar calidad, versionado y actualización de dependencias.
+
+### Estrategia de ramas
+
+```
+main ──── protegida, solo via PR, dispara release automático
+develop ── integración, destino de features y fixes
+feat/* fix/* chore/* ── ramas temporales, PR a develop
+```
+
+### Workflow CI — en cada PR a `develop` o `main`
+
+| Job | Qué verifica |
+|---|---|
+| Backend — Maven tests | Compila y ejecuta tests con `mvn test` |
+| Frontend — Vite build | Verifica que el bundle compila sin errores |
+| Frontend — ESLint | Linting de componentes Vue 3 (flat config) |
+| Commitlint | Formato Conventional Commits en todos los commits del PR |
+
+Los cuatro jobs deben pasar en verde para poder hacer merge.
+
+### Workflow Quality — cada lunes o manualmente
+
+Genera un informe de cobertura de tests (JaCoCo) descargable desde **Actions → Quality → artefactos**. El informe se activa cuando haya tests escritos en el backend.
+
+### Versionado semántico automático
+
+Al mergear a `main`, el workflow Release crea un tag semver automáticamente según los mensajes de commit:
+
+| Prefijo de commit | Bump | Ejemplo |
+|---|---|---|
+| `feat:` | minor | v0.1.0 → v0.2.0 |
+| `fix:` | patch | v0.1.0 → v0.1.1 |
+| `chore:` `docs:` `ci:` `refactor:` | patch | v0.1.0 → v0.1.1 |
+| Body contiene `BREAKING CHANGE` | major | v0.1.0 → v1.0.0 |
+
+### Dependabot
+
+PRs automáticas de actualización de dependencias Maven, npm y GitHub Actions cada lunes, dirigidas a `develop` para pasar por el CI antes de llegar a `main`.
 
 ---
 
