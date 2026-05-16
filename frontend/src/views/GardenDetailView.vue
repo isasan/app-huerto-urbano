@@ -209,7 +209,10 @@ async function handleDeleteCrop(cropId) {
                   :class="['list-group-item list-group-item-action border-0 rounded px-2',
                            selectedPlot?.id === plot.id ? 'active' : '']"
                   style="cursor: pointer;"
+                  role="button"
+                  tabindex="0"
                   @click="selectPlot(plot)"
+                  @keydown.enter="selectPlot(plot)"
                 >
                   <div class="d-flex justify-content-between align-items-center">
                     <span>
@@ -305,16 +308,16 @@ async function handleDeleteCrop(cropId) {
           <div class="modal-body">
             <form @submit.prevent="handlePlotSave">
               <div class="mb-3">
-                <label class="form-label">Nombre <span class="text-danger">*</span></label>
-                <input v-model="plotForm.name" type="text" class="form-control" required placeholder="Parcela A" />
+                <label for="plot-name" class="form-label">Nombre <span class="text-danger">*</span></label>
+                <input id="plot-name" v-model="plotForm.name" type="text" class="form-control" required placeholder="Parcela A" />
               </div>
               <div class="mb-3">
-                <label class="form-label">Tamaño (m²)</label>
-                <input v-model.number="plotForm.sizeM2" type="number" step="0.1" min="0" class="form-control" />
+                <label for="plot-size" class="form-label">Tamaño (m²)</label>
+                <input id="plot-size" v-model.number="plotForm.sizeM2" type="number" step="0.1" min="0" class="form-control" />
               </div>
               <div class="mb-3">
-                <label class="form-label">Tipo de suelo</label>
-                <input v-model="plotForm.soilType" type="text" class="form-control" placeholder="Arcilloso, arenoso, franco..." />
+                <label for="plot-soil" class="form-label">Tipo de suelo</label>
+                <input id="plot-soil" v-model="plotForm.soilType" type="text" class="form-control" placeholder="Arcilloso, arenoso, franco..." />
               </div>
               <div class="d-flex gap-2 justify-content-end">
                 <button type="button" class="btn btn-outline-secondary" @click="tryClosePlotForm">Cancelar</button>
