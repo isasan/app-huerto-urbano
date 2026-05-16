@@ -260,3 +260,5 @@ Para producción se recomienda externalizar la caché con **Redis** usando `@Cac
 ## Licencia
 
 [MIT](LICENSE) — libre para uso, modificación y distribución.
+
+<!-- CI workflow test -->
