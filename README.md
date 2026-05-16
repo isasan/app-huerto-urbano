@@ -7,6 +7,7 @@
 ![H2](https://img.shields.io/badge/H2_Database-003545?style=flat&logo=h2&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=flat&logo=jsonwebtokens&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![Version](https://img.shields.io/github/v/tag/isasan/app-huerto-urbano?sort=semver&label=version&color=4CAF50)
 
 Aplicación fullstack para gestionar huertos urbanos domésticos. Permite controlar parcelas, cultivos, tareas de mantenimiento, registros de cosecha y consultar el clima en tiempo real.
 
