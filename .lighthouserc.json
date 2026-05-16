@@ -1,0 +1,23 @@
+{
+  "ci": {
+    "collect": {
+      "numberOfRuns": 1,
+      "startServerCommand": "npm run preview --prefix frontend",
+      "startServerReadyPattern": "Local",
+      "startServerReadyTimeout": 20000,
+      "url": [
+        "http://localhost:4173/",
+        "http://localhost:4173/login",
+        "http://localhost:4173/register"
+      ]
+    },
+    "assert": {
+      "assertions": {
+        "categories:accessibility": ["warn", { "minScore": 0.9 }]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}
