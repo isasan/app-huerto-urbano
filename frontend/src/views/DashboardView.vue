@@ -237,7 +237,7 @@ function getTypeConfig(type) {
                 <p class="mb-0" style="font-size:0.8rem;color:var(--text-light)">Disfruta el día en el huerto.</p>
               </div>
 
-              <ul v-else class="timeline-list" role="list">
+              <ul v-else class="timeline-list">
                 <li
                   v-for="(t, idx) in dashboard.tasksDueToday"
                   :key="t.id"
@@ -281,7 +281,7 @@ function getTypeConfig(type) {
                 <p class="mb-0" style="font-size:0.8rem;color:var(--text-light)">¡La cosecha llegará pronto!</p>
               </div>
 
-              <ul v-else class="harvest-ready-list" role="list">
+              <ul v-else class="harvest-ready-list">
                 <li
                   v-for="(c, idx) in dashboard.cropsReadyToHarvest"
                   :key="c.id"
@@ -322,7 +322,7 @@ function getTypeConfig(type) {
                 <p class="mb-0" style="font-size:0.8rem;color:var(--text-light)">Registra tus cosechas aquí.</p>
               </div>
 
-              <ul v-else class="harvest-list" role="list">
+              <ul v-else class="harvest-list">
                 <li
                   v-for="(h, idx) in dashboard.recentHarvests"
                   :key="h.id"

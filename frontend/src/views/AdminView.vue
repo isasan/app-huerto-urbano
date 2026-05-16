@@ -521,8 +521,8 @@ watch(showCalendarPlantForm, async (val) => {
                       </span>
                     </td>
                     <td>
-                      <a v-if="d.wikipediaUrl" :href="d.wikipediaUrl" target="_blank" rel="noopener" class="text-success small">
-                        <i class="bi bi-box-arrow-up-right"></i>
+                      <a v-if="d.wikipediaUrl" :href="d.wikipediaUrl" target="_blank" rel="noopener" class="text-success small" :aria-label="`Wikipedia: ${d.plantName}`">
+                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                       </a>
                       <span v-else class="text-muted small">—</span>
                     </td>
@@ -609,7 +609,7 @@ watch(showCalendarPlantForm, async (val) => {
     </section>
 
     <!-- Modal: Crear usuario -->
-    <div v-if="showCreateUser" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.45)" @click.self="tryCloseCreateUser">
+    <div v-if="showCreateUser" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.45)" @click.self="tryCloseCreateUser" @keydown.escape="tryCloseCreateUser">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
           <div class="modal-header bg-success text-white">
@@ -621,42 +621,42 @@ watch(showCalendarPlantForm, async (val) => {
               <div v-if="createUserError" class="alert alert-danger py-2 small">{{ createUserError }}</div>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">Nombre de usuario <span class="text-danger">*</span></label>
-                  <input v-model="createUserForm.username" class="form-control" required minlength="3" maxlength="50" placeholder="usuario123" />
+                  <label class="form-label" for="cu-username">Nombre de usuario <span class="text-danger">*</span></label>
+                  <input id="cu-username" v-model="createUserForm.username" class="form-control" required minlength="3" maxlength="50" placeholder="usuario123" />
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Email <span class="text-danger">*</span></label>
-                  <input v-model="createUserForm.email" type="email" class="form-control" required placeholder="usuario@email.com" />
+                  <label class="form-label" for="cu-email">Email <span class="text-danger">*</span></label>
+                  <input id="cu-email" v-model="createUserForm.email" type="email" class="form-control" required placeholder="usuario@email.com" />
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Contraseña <span class="text-danger">*</span></label>
-                  <input v-model="createUserForm.password" type="password" class="form-control" required minlength="6" placeholder="Mínimo 6 caracteres" />
+                  <label class="form-label" for="cu-password">Contraseña <span class="text-danger">*</span></label>
+                  <input id="cu-password" v-model="createUserForm.password" type="password" class="form-control" required minlength="6" placeholder="Mínimo 6 caracteres" />
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Confirmar contraseña <span class="text-danger">*</span></label>
-                  <input v-model="createUserForm.confirmPassword" type="password" class="form-control" required placeholder="Repite la contraseña" />
+                  <label class="form-label" for="cu-confirm-password">Confirmar contraseña <span class="text-danger">*</span></label>
+                  <input id="cu-confirm-password" v-model="createUserForm.confirmPassword" type="password" class="form-control" required placeholder="Repite la contraseña" />
                 </div>
                 <div class="col-md-4">
-                  <label class="form-label">Rol</label>
-                  <select v-model="createUserForm.role" class="form-select">
+                  <label class="form-label" for="cu-role">Rol</label>
+                  <select id="cu-role" v-model="createUserForm.role" class="form-select">
                     <option value="USER">Usuario</option>
                     <option value="ADMIN">Admin</option>
                   </select>
                 </div>
                 <div class="col-md-4">
-                  <label class="form-label">Hemisferio</label>
-                  <select v-model="createUserForm.hemisphere" class="form-select">
+                  <label class="form-label" for="cu-hemisphere">Hemisferio</label>
+                  <select id="cu-hemisphere" v-model="createUserForm.hemisphere" class="form-select">
                     <option value="NORTE">Norte</option>
                     <option value="SUR">Sur</option>
                   </select>
                 </div>
                 <div class="col-md-4">
-                  <label class="form-label">Código país</label>
-                  <input v-model="createUserForm.countryCode" class="form-control" maxlength="2" placeholder="ES" />
+                  <label class="form-label" for="cu-country-code">Código país</label>
+                  <input id="cu-country-code" v-model="createUserForm.countryCode" class="form-control" maxlength="2" placeholder="ES" />
                 </div>
                 <div class="col-12">
-                  <label class="form-label">Ciudad</label>
-                  <input v-model="createUserForm.city" class="form-control" placeholder="Madrid" />
+                  <label class="form-label" for="cu-city">Ciudad</label>
+                  <input id="cu-city" v-model="createUserForm.city" class="form-control" placeholder="Madrid" />
                 </div>
               </div>
             </div>
@@ -731,7 +731,7 @@ watch(showCalendarPlantForm, async (val) => {
     </div>
 
     <!-- Modal: Editar ficha de planta del sistema -->
-    <div v-if="showDetailForm" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.4)" @click.self="tryCloseDetailForm">
+    <div v-if="showDetailForm" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.4)" @click.self="tryCloseDetailForm" @keydown.escape="tryCloseDetailForm">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
           <div class="modal-header bg-success text-white">
@@ -744,20 +744,20 @@ watch(showCalendarPlantForm, async (val) => {
             <div class="modal-body">
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">Nombre latino</label>
-                  <input v-model="detailForm.latinName" class="form-control" placeholder="Solanum lycopersicum" />
+                  <label class="form-label" for="pd-latin-name">Nombre latino</label>
+                  <input id="pd-latin-name" v-model="detailForm.latinName" class="form-control" placeholder="Solanum lycopersicum" />
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Frecuencia de riego</label>
-                  <input v-model="detailForm.wateringFrequency" class="form-control" placeholder="3-4 veces/semana" />
+                  <label class="form-label" for="pd-watering">Frecuencia de riego</label>
+                  <input id="pd-watering" v-model="detailForm.wateringFrequency" class="form-control" placeholder="3-4 veces/semana" />
                 </div>
                 <div class="col-12">
-                  <label class="form-label">Plagas <span class="text-muted small">(separadas por comas)</span></label>
-                  <input v-model="detailForm.pests" class="form-control" placeholder="Pulgón, Mosca blanca, Trips" />
+                  <label class="form-label" for="pd-pests">Plagas <span class="text-muted small">(separadas por comas)</span></label>
+                  <input id="pd-pests" v-model="detailForm.pests" class="form-control" placeholder="Pulgón, Mosca blanca, Trips" />
                 </div>
                 <div class="col-12">
-                  <label class="form-label">Enlace Wikipedia</label>
-                  <input v-model="detailForm.wikipediaUrl" type="url" class="form-control" placeholder="https://es.wikipedia.org/wiki/..." />
+                  <label class="form-label" for="pd-wikipedia">Enlace Wikipedia</label>
+                  <input id="pd-wikipedia" v-model="detailForm.wikipediaUrl" type="url" class="form-control" placeholder="https://es.wikipedia.org/wiki/..." />
                 </div>
               </div>
             </div>
@@ -774,7 +774,7 @@ watch(showCalendarPlantForm, async (val) => {
     </div>
 
     <!-- Modal: Crear / Editar planta del calendario -->
-    <div v-if="showCalendarPlantForm" ref="calendarPlantModalRef" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.45)" @click.self="tryCloseCalendarPlantForm">
+    <div v-if="showCalendarPlantForm" ref="calendarPlantModalRef" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.45)" @click.self="tryCloseCalendarPlantForm" @keydown.escape="tryCloseCalendarPlantForm">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
           <div class="modal-header bg-success text-white">
@@ -797,7 +797,7 @@ watch(showCalendarPlantForm, async (val) => {
 
                 <!-- Nombre -->
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold d-flex align-items-center gap-1">
+                  <label class="form-label fw-semibold d-flex align-items-center gap-1" for="cp-plant-name">
                     Nombre <span class="text-danger">*</span>
                     <i class="bi bi-info-circle text-muted ms-1"
                        style="cursor:help;font-size:.85rem"
@@ -805,12 +805,12 @@ watch(showCalendarPlantForm, async (val) => {
                        data-bs-placement="top"
                        title="Nombre común en español, tal como aparecerá en el calendario. Debe ser único en el sistema. Ej: Albahaca, Lavanda, Jengibre."></i>
                   </label>
-                  <input v-model="calendarPlantForm.plantName" class="form-control" required placeholder="ej. Albahaca" />
+                  <input id="cp-plant-name" v-model="calendarPlantForm.plantName" class="form-control" required placeholder="ej. Albahaca" />
                 </div>
 
                 <!-- Emoji -->
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold d-flex align-items-center gap-1">
+                  <label class="form-label fw-semibold d-flex align-items-center gap-1" for="cp-emoji">
                     Icono (emoji) <span class="text-danger">*</span>
                     <span v-if="calendarPlantForm.emoji" class="ms-1" style="font-size:1.3rem;line-height:1">{{ calendarPlantForm.emoji }}</span>
                     <i class="bi bi-info-circle text-muted ms-1"
@@ -820,7 +820,7 @@ watch(showCalendarPlantForm, async (val) => {
                        title="Abre el selector de emojis del sistema: Windows → tecla Win + punto (.) | Mac → Cmd + Ctrl + Space. También puedes copiar uno de Emojipedia y pegarlo aquí."></i>
                   </label>
                   <div class="input-group">
-                    <input v-model="calendarPlantForm.emoji" class="form-control" required placeholder="🌿" maxlength="4" />
+                    <input id="cp-emoji" v-model="calendarPlantForm.emoji" class="form-control" required placeholder="🌿" maxlength="4" />
                     <a href="https://emojipedia.org/es/plants"
                        target="_blank" rel="noopener"
                        class="input-group-text text-success text-decoration-none"
@@ -832,7 +832,7 @@ watch(showCalendarPlantForm, async (val) => {
 
                 <!-- Hemisferio -->
                 <div class="col-md-4">
-                  <label class="form-label fw-semibold d-flex align-items-center gap-1">
+                  <label class="form-label fw-semibold d-flex align-items-center gap-1" for="cp-hemisphere">
                     Hemisferio <span class="text-danger">*</span>
                     <i class="bi bi-info-circle text-muted ms-1"
                        style="cursor:help;font-size:.85rem"
@@ -840,7 +840,7 @@ watch(showCalendarPlantForm, async (val) => {
                        data-bs-placement="top"
                        title="Norte: España, Europa, Asia, Norteamérica. Sur: Australia, Sudamérica, África del Sur. Las estaciones son opuestas. Si la planta se cultiva en ambos hemisferios, añádela dos veces."></i>
                   </label>
-                  <select v-model="calendarPlantForm.hemisphere" class="form-select" required>
+                  <select id="cp-hemisphere" v-model="calendarPlantForm.hemisphere" class="form-select" required>
                     <option value="NORTE">🌍 Norte</option>
                     <option value="SUR">🌏 Sur</option>
                   </select>
@@ -848,7 +848,7 @@ watch(showCalendarPlantForm, async (val) => {
 
                 <!-- Dificultad -->
                 <div class="col-md-4">
-                  <label class="form-label fw-semibold d-flex align-items-center gap-1">
+                  <label class="form-label fw-semibold d-flex align-items-center gap-1" for="cp-difficulty">
                     Dificultad <span class="text-danger">*</span>
                     <i class="bi bi-info-circle text-muted ms-1"
                        style="cursor:help;font-size:.85rem"
@@ -856,7 +856,7 @@ watch(showCalendarPlantForm, async (val) => {
                        data-bs-placement="top"
                        title="Fácil: poca atención, ideal para principiantes (lechuga, rábano). Media: riegos regulares y algo de experiencia (tomate, pimiento). Difícil: cuidados específicos o microclima controlado (alcachofa, espárrago)."></i>
                   </label>
-                  <select v-model="calendarPlantForm.difficulty" class="form-select" required>
+                  <select id="cp-difficulty" v-model="calendarPlantForm.difficulty" class="form-select" required>
                     <option value="FACIL">🟢 Fácil</option>
                     <option value="MEDIA">🟡 Media</option>
                     <option value="DIFICIL">🔴 Difícil</option>
@@ -865,7 +865,7 @@ watch(showCalendarPlantForm, async (val) => {
 
                 <!-- Días hasta cosecha -->
                 <div class="col-md-4">
-                  <label class="form-label fw-semibold d-flex align-items-center gap-1">
+                  <label class="form-label fw-semibold d-flex align-items-center gap-1" for="cp-days-to-harvest">
                     Días hasta cosecha <span class="text-danger">*</span>
                     <i class="bi bi-info-circle text-muted ms-1"
                        style="cursor:help;font-size:.85rem"
@@ -874,7 +874,7 @@ watch(showCalendarPlantForm, async (val) => {
                        title="Días desde la siembra hasta la primera cosecha. Ejemplos: lechuga → 45, tomate → 90, zanahoria → 75, espárrago → 730 (2 años)."></i>
                   </label>
                   <div class="input-group">
-                    <input v-model.number="calendarPlantForm.daysToHarvest" type="number" class="form-control" required min="1" max="999" />
+                    <input id="cp-days-to-harvest" v-model.number="calendarPlantForm.daysToHarvest" type="number" class="form-control" required min="1" max="999" />
                     <span class="input-group-text text-muted small">días</span>
                   </div>
                 </div>
@@ -938,7 +938,7 @@ watch(showCalendarPlantForm, async (val) => {
 
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold d-flex align-items-center gap-1">
+                  <label class="form-label fw-semibold d-flex align-items-center gap-1" for="cp-latin-name">
                     Nombre científico
                     <i class="bi bi-info-circle text-muted ms-1"
                        style="cursor:help;font-size:.85rem"
@@ -946,10 +946,10 @@ watch(showCalendarPlantForm, async (val) => {
                        data-bs-placement="top"
                        title="Nombre en latín de la especie. Aparece en cursiva bajo el nombre común. Ej: Solanum lycopersicum (tomate), Lactuca sativa (lechuga), Daucus carota (zanahoria)."></i>
                   </label>
-                  <input v-model="calendarPlantForm.latinName" class="form-control" placeholder="ej. Ocimum basilicum" />
+                  <input id="cp-latin-name" v-model="calendarPlantForm.latinName" class="form-control" placeholder="ej. Ocimum basilicum" />
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold d-flex align-items-center gap-1">
+                  <label class="form-label fw-semibold d-flex align-items-center gap-1" for="cp-watering">
                     Frecuencia de riego
                     <i class="bi bi-info-circle text-muted ms-1"
                        style="cursor:help;font-size:.85rem"
@@ -957,10 +957,10 @@ watch(showCalendarPlantForm, async (val) => {
                        data-bs-placement="top"
                        title="Describe con qué frecuencia regar. Ej: «Riego moderado, 2-3 veces/semana. En verano aumentar frecuencia. Evitar encharcamiento.»"></i>
                   </label>
-                  <input v-model="calendarPlantForm.wateringFrequency" class="form-control" placeholder="ej. 3-4 veces por semana" />
+                  <input id="cp-watering" v-model="calendarPlantForm.wateringFrequency" class="form-control" placeholder="ej. 3-4 veces por semana" />
                 </div>
                 <div class="col-12">
-                  <label class="form-label fw-semibold d-flex align-items-center gap-1">
+                  <label class="form-label fw-semibold d-flex align-items-center gap-1" for="cp-pests">
                     Plagas y enfermedades a vigilar
                     <i class="bi bi-info-circle text-muted ms-1"
                        style="cursor:help;font-size:.85rem"
@@ -968,10 +968,10 @@ watch(showCalendarPlantForm, async (val) => {
                        data-bs-placement="top"
                        title="Escribe las amenazas separadas por comas. Cada una aparecerá como etiqueta individual en la ficha. Ej: Pulgón, Mosca blanca, Trips, Mildiu, Oídio."></i>
                   </label>
-                  <input v-model="calendarPlantForm.pests" class="form-control" placeholder="ej. Pulgón, Araña roja, Oídio" />
+                  <input id="cp-pests" v-model="calendarPlantForm.pests" class="form-control" placeholder="ej. Pulgón, Araña roja, Oídio" />
                 </div>
                 <div class="col-12">
-                  <label class="form-label fw-semibold d-flex align-items-center gap-1">
+                  <label class="form-label fw-semibold d-flex align-items-center gap-1" for="cp-wikipedia">
                     Enlace a Wikipedia
                     <i class="bi bi-info-circle text-muted ms-1"
                        style="cursor:help;font-size:.85rem"
@@ -981,7 +981,7 @@ watch(showCalendarPlantForm, async (val) => {
                   </label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-wikipedia text-muted"></i></span>
-                    <input v-model="calendarPlantForm.wikipediaUrl" type="url" class="form-control" placeholder="https://es.wikipedia.org/wiki/Ocimum_basilicum" />
+                    <input id="cp-wikipedia" v-model="calendarPlantForm.wikipediaUrl" type="url" class="form-control" placeholder="https://es.wikipedia.org/wiki/Ocimum_basilicum" />
                     <a href="https://es.wikipedia.org"
                        target="_blank" rel="noopener"
                        class="input-group-text text-success text-decoration-none"
