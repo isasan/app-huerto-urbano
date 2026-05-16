@@ -24,6 +24,12 @@ jobs:
         run: mvn verify -B
         working-directory: backend
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: backend/target/site/jacoco/jacoco.xml
+          fail_ci_if_error: false
+
   frontend:
     name: Frontend — Vite build
     runs-on: ubuntu-latest
