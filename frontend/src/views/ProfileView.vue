@@ -128,7 +128,10 @@ async function confirmDeleteAccount() {
           <div
             class="mx-auto mb-2 d-flex align-items-center justify-content-center"
             style="font-size:3.5rem; width:80px; height:80px; background:rgba(255,255,255,0.2); border-radius:50%; cursor:pointer"
+            role="button"
+            tabindex="0"
             @click="showAvatarPicker = !showAvatarPicker"
+            @keydown.enter="showAvatarPicker = !showAvatarPicker"
             :title="showAvatarPicker ? 'Cerrar selector' : 'Cambiar avatar'"
           >{{ avatar }}</div>
           <div class="text-white-50 small mb-1">Haz clic para cambiar</div>
@@ -145,7 +148,10 @@ async function confirmDeleteAccount() {
             <span
               v-for="emoji in AVATARS"
               :key="emoji"
+              role="button"
+              tabindex="0"
               @click="avatar = emoji"
+              @keydown.enter="avatar = emoji"
               class="rounded-2 p-1"
               style="font-size:1.8rem; cursor:pointer; border: 2px solid; transition: border-color 0.15s"
               :style="avatar === emoji ? 'border-color: #198754; background:#fff' : 'border-color: #dee2e6; background:#fff'"
@@ -184,16 +190,17 @@ async function confirmDeleteAccount() {
           <div v-if="profileError" class="alert alert-danger py-2">{{ profileError }}</div>
           <form @submit.prevent="saveProfile">
             <div class="mb-3">
-              <label class="form-label">Ciudad</label>
-              <input v-model="city" type="text" class="form-control"
+              <label for="profile-city" class="form-label">Ciudad</label>
+              <input id="profile-city" v-model="city" type="text" class="form-control"
                 placeholder="Ej: Madrid, Barcelona, Buenos Aires" maxlength="100" />
               <div class="form-text">Se usará para mostrar el clima en el dashboard</div>
             </div>
             <div class="mb-3">
-              <label class="form-label">
+              <label for="profile-country" class="form-label">
                 País <span class="text-muted small">(código ISO, opcional)</span>
               </label>
               <input
+                id="profile-country"
                 v-model="countryCode"
                 type="text"
                 class="form-control"
@@ -208,8 +215,8 @@ async function confirmDeleteAccount() {
               </div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Hemisferio</label>
-              <select v-model="hemisphere" class="form-select">
+              <label for="profile-hemisphere" class="form-label">Hemisferio</label>
+              <select id="profile-hemisphere" v-model="hemisphere" class="form-select">
                 <option value="NORTE">Norte</option>
                 <option value="SUR">Sur</option>
               </select>
@@ -230,17 +237,17 @@ async function confirmDeleteAccount() {
           <div v-if="pwError" class="alert alert-danger py-2">{{ pwError }}</div>
           <form @submit.prevent="changePassword">
             <div class="mb-3">
-              <label class="form-label">Contraseña actual <span class="text-danger">*</span></label>
-              <input v-model="pwCurrent" type="password" class="form-control" required />
+              <label for="pw-current" class="form-label">Contraseña actual <span class="text-danger">*</span></label>
+              <input id="pw-current" v-model="pwCurrent" type="password" class="form-control" required />
             </div>
             <div class="mb-3">
-              <label class="form-label">Nueva contraseña <span class="text-danger">*</span></label>
-              <input v-model="pwNew" type="password" class="form-control" minlength="6" required />
+              <label for="pw-new" class="form-label">Nueva contraseña <span class="text-danger">*</span></label>
+              <input id="pw-new" v-model="pwNew" type="password" class="form-control" minlength="6" required />
               <div class="form-text">Mínimo 6 caracteres</div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Confirmar nueva contraseña <span class="text-danger">*</span></label>
-              <input v-model="pwConfirm" type="password" class="form-control" required />
+              <label for="pw-confirm" class="form-label">Confirmar nueva contraseña <span class="text-danger">*</span></label>
+              <input id="pw-confirm" v-model="pwConfirm" type="password" class="form-control" required />
             </div>
             <button type="submit" class="btn btn-outline-success" :disabled="pwLoading">
               <span v-if="pwLoading" class="spinner-border spinner-border-sm me-2"></span>
@@ -272,11 +279,13 @@ async function confirmDeleteAccount() {
               Escribe tu usuario <strong>«{{ authStore.user?.username }}»</strong> para confirmar:
             </p>
             <input
+              id="delete-username"
               v-model="deleteUsername"
               type="text"
               class="form-control form-control-sm mb-3"
               placeholder="Tu nombre de usuario"
               autocomplete="off"
+              aria-label="Escribe tu nombre de usuario para confirmar"
             />
             <div class="d-flex gap-2">
               <button
