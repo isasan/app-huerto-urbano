@@ -69,6 +69,7 @@ jobs:
   commitlint:
     name: Commitlint
     runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.head_ref, 'dependabot/') }}
     steps:
       - uses: actions/checkout@v6
         with:
