@@ -43,22 +43,13 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Cache NVD database
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: nvd-${{ github.run_id }}
-          restore-keys: nvd-
-
       - name: Run OWASP dependency check
         run: mvn dependency-check:check -B
         working-directory: backend
-        env:
-          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
       - name: Upload OWASP report
         uses: actions/upload-artifact@v7
         if: always()
         with:
           name: owasp-report
-          path: backend/target/dependency-check-report.html
+          path: backend/target/dependency-check-report*
