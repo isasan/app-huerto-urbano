@@ -17,12 +17,12 @@ Aplicación fullstack para gestionar huertos urbanos domésticos. Permite contro
 ## Capturas de pantalla
 
 | Dashboard | Mis Huertos | Tareas |
-|-----------|-------------|--------|
-| *(Panel de resumen con clima, estadísticas y accesos rápidos)* | *(Tarjetas de huertos con parcelas y cultivos)* | *(Tablero de tareas filtrable por tipo y fecha)* |
+|:---------:|:-----------:|:------:|
+| ![Dashboard](screenshots/dashboard.png) | ![Mis Huertos](screenshots/gardens.png) | ![Tareas](screenshots/tasks.png) |
 
 | Cosechas | Calendario de siembra | Perfil |
-|----------|----------------------|--------|
-| *(Registro histórico con estadísticas por planta)* | *(Calendario de siembra por hemisferio y mes)* | *(Configuración de ubicación y cambio de contraseña)* |
+|:--------:|:---------------------:|:------:|
+| ![Cosechas](screenshots/harvests.png) | ![Calendario](screenshots/calendar.png) | ![Perfil](screenshots/profile.png) |
 
 ---
 
