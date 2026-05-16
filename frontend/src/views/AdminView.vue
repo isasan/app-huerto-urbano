@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive, computed, watch, nextTick } from 'vue'
+import { ref, onMounted, reactive, watch, nextTick } from 'vue'
 import { Tooltip } from 'bootstrap'
 import { adminService } from '@/services/adminService.js'
 import { plantDetailService } from '@/services/plantDetailService.js'
@@ -90,7 +90,6 @@ let detailFormSnapshot = ''
 
 // ── Calendar plants (from DB) ─────────────────────────────────────────────
 const calendarPlants = ref([])
-const calendarPlantsLoading = ref(false)
 const showCalendarPlantForm = ref(false)
 const editingCalendarPlant = ref(null)
 const savingCalendarPlant = ref(false)
