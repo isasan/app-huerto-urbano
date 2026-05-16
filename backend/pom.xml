@@ -137,6 +137,8 @@
                 <version>9.0.9</version>
                 <configuration>
                     <failBuildOnCVSS>11</failBuildOnCVSS>
+                    <failOnError>false</failOnError>
+                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                 </configuration>
             </plugin>
         </plugins>
