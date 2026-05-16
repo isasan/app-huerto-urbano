@@ -22,7 +22,6 @@ async function handleRegister() {
 
   loading.value = true
   try {
-    // eslint-disable-next-line no-unused-vars
     const { confirmPassword, ...payload } = form
     await authStore.register(payload)
     router.push({ name: 'login' })

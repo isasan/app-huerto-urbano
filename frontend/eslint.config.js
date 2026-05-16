@@ -3,10 +3,11 @@ import pluginVue from 'eslint-plugin-vue'
 
 export default [
   js.configs.recommended,
-  ...pluginVue.configs['flat/recommended'],
+  ...pluginVue.configs['flat/essential'],
   {
     rules: {
-      'vue/multi-word-component-names': 'off'
+      'vue/multi-word-component-names': 'off',
+      'no-unused-vars': ['error', { ignoreRestSiblings: true }]
     }
   }
 ]

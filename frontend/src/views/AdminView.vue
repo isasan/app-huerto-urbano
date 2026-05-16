@@ -63,7 +63,6 @@ async function handleCreateUser() {
   }
   savingUser.value = true
   try {
-    // eslint-disable-next-line no-unused-vars
     const { confirmPassword, ...payload } = createUserForm
     const created = await adminService.createUser(payload)
     users.value.unshift(created)
