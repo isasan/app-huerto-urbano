@@ -130,18 +130,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>9.0.9</version>
-                <configuration>
-                    <failBuildOnCVSS>11</failBuildOnCVSS>
-                    <failOnError>false</failOnError>
-                    <nvdAnalyzerEnabled>false</nvdAnalyzerEnabled>
-                    <ossIndexAnalyzerEnabled>true</ossIndexAnalyzerEnabled>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 </project>
