@@ -34,7 +34,7 @@ class WeatherServiceTest {
 
     @AfterEach
     void tearDown() throws IOException {
-        mockWebServer.shutdown();
+        mockWebServer.close();
     }
 
     @Test
@@ -49,12 +49,14 @@ class WeatherServiceTest {
                  "current_units": {}}
                 """;
 
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(geocodingBody)
-                .addHeader("Content-Type", "application/json"));
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(forecastBody)
-                .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+                .body(geocodingBody)
+                .addHeader("Content-Type", "application/json")
+                .build());
+        mockWebServer.enqueue(new MockResponse.Builder()
+                .body(forecastBody)
+                .addHeader("Content-Type", "application/json")
+                .build());
 
         WeatherResponse response = weatherService.getWeatherByCity("Madrid", "ES");
 
@@ -70,9 +72,10 @@ class WeatherServiceTest {
                 {"results": []}
                 """;
 
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(geocodingBody)
-                .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+                .body(geocodingBody)
+                .addHeader("Content-Type", "application/json")
+                .build());
 
         assertThatThrownBy(() -> weatherService.getWeatherByCity("CiudadInexistente", null))
                 .isInstanceOf(ResourceNotFoundException.class)
@@ -91,12 +94,14 @@ class WeatherServiceTest {
                  "current_units": {}}
                 """;
 
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(geocodingBody)
-                .addHeader("Content-Type", "application/json"));
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(forecastBody)
-                .addHeader("Content-Type", "application/json"));
+        mockWebServer.enqueue(new MockResponse.Builder()
+                .body(geocodingBody)
+                .addHeader("Content-Type", "application/json")
+                .build());
+        mockWebServer.enqueue(new MockResponse.Builder()
+                .body(forecastBody)
+                .addHeader("Content-Type", "application/json")
+                .build());
 
         WeatherResponse first = weatherService.getWeatherByCity("Madrid", "ES");
         WeatherResponse second = weatherService.getWeatherByCity("Madrid", "ES");
