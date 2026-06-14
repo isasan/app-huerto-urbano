@@ -17,33 +17,56 @@ const form = reactive({
   notes:               props.initial.notes || ''
 })
 
+const touched = reactive({ plantName: false, plantedDate: false })
+
 function submit() {
+  touched.plantName = true
+  touched.plantedDate = true
+  if (!form.plantName.trim() || !form.plantedDate) return
   emit('submit', { ...form })
 }
 </script>
 
 <template>
-  <form @submit.prevent="submit">
+  <form @submit.prevent="submit" novalidate>
     <div class="row g-3">
       <div class="col-md-6">
-        <label class="form-label">Planta <span class="text-danger">*</span></label>
-        <input v-model="form.plantName" class="form-control" required placeholder="Tomate, Lechuga..." />
+        <label class="form-label" for="crop-plant">Planta <span class="text-danger" aria-hidden="true">*</span></label>
+        <input
+          id="crop-plant"
+          v-model="form.plantName"
+          class="form-control"
+          :class="{ 'is-invalid': touched.plantName && !form.plantName.trim() }"
+          required
+          placeholder="Tomate, Lechuga..."
+          @blur="touched.plantName = true"
+        />
+        <div class="invalid-feedback">Indica qué planta vas a cultivar</div>
       </div>
       <div class="col-md-6">
-        <label class="form-label">Variedad</label>
-        <input v-model="form.variety" class="form-control" placeholder="Cherry, Iceberg..." />
+        <label class="form-label" for="crop-variety">Variedad</label>
+        <input id="crop-variety" v-model="form.variety" class="form-control" placeholder="Cherry, Iceberg..." />
       </div>
       <div class="col-md-6">
-        <label class="form-label">Fecha de siembra <span class="text-danger">*</span></label>
-        <input v-model="form.plantedDate" type="date" class="form-control" required />
+        <label class="form-label" for="crop-planted">Fecha de siembra <span class="text-danger" aria-hidden="true">*</span></label>
+        <input
+          id="crop-planted"
+          v-model="form.plantedDate"
+          type="date"
+          class="form-control"
+          :class="{ 'is-invalid': touched.plantedDate && !form.plantedDate }"
+          required
+          @blur="touched.plantedDate = true"
+        />
+        <div class="invalid-feedback">La fecha de siembra es obligatoria</div>
       </div>
       <div class="col-md-6">
-        <label class="form-label">Fecha estimada de cosecha</label>
-        <input v-model="form.expectedHarvestDate" type="date" class="form-control" />
+        <label class="form-label" for="crop-harvest">Fecha estimada de cosecha</label>
+        <input id="crop-harvest" v-model="form.expectedHarvestDate" type="date" class="form-control" />
       </div>
       <div class="col-12">
-        <label class="form-label">Notas</label>
-        <textarea v-model="form.notes" class="form-control" rows="2"></textarea>
+        <label class="form-label" for="crop-notes">Notas</label>
+        <textarea id="crop-notes" v-model="form.notes" class="form-control" rows="2"></textarea>
       </div>
     </div>
     <div class="d-flex gap-2 justify-content-end mt-3">

@@ -6,6 +6,7 @@ import { plantDetailService } from '@/services/plantDetailService.js'
 import { calendarPlantService } from '@/services/calendarPlantService.js'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
+import BaseModal from '@/components/ui/BaseModal.vue'
 
 const authStore = useAuthStore()
 const toast = useToast()
@@ -609,16 +610,16 @@ watch(showCalendarPlantForm, async (val) => {
     </section>
 
     <!-- Modal: Crear usuario -->
-    <div v-if="showCreateUser" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.45)" @click.self="tryCloseCreateUser" @keydown.escape="tryCloseCreateUser">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow">
-          <div class="modal-header bg-success text-white">
-            <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>Nuevo usuario</h5>
-            <button type="button" class="btn-close btn-close-white" @click="tryCloseCreateUser"></button>
-          </div>
-          <form @submit.prevent="handleCreateUser">
-            <div class="modal-body">
-              <div v-if="createUserError" class="alert alert-danger py-2 small">{{ createUserError }}</div>
+    <BaseModal
+      :show="showCreateUser"
+      title="Nuevo usuario"
+      icon="bi-person-plus"
+      variant="success"
+      size="lg"
+      @close="tryCloseCreateUser"
+    >
+      <form @submit.prevent="handleCreateUser">
+        <div v-if="createUserError" class="alert alert-danger py-2 small">{{ createUserError }}</div>
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="form-label" for="cu-username">Nombre de usuario <span class="text-danger">*</span></label>
@@ -658,134 +659,116 @@ watch(showCalendarPlantForm, async (val) => {
                   <label class="form-label" for="cu-city">Ciudad</label>
                   <input id="cu-city" v-model="createUserForm.city" class="form-control" placeholder="Madrid" />
                 </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" @click="tryCloseCreateUser">Cancelar</button>
-              <button type="submit" class="btn btn-success" :disabled="savingUser">
-                <span v-if="savingUser" class="spinner-border spinner-border-sm me-1"></span>
-                <i v-else class="bi bi-check-lg me-1"></i>Crear usuario
-              </button>
-            </div>
-          </form>
         </div>
-      </div>
-    </div>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button type="button" class="btn btn-outline-secondary" @click="tryCloseCreateUser">Cancelar</button>
+          <button type="submit" class="btn btn-success" :disabled="savingUser">
+            <span v-if="savingUser" class="spinner-border spinner-border-sm me-1"></span>
+            <i v-else class="bi bi-check-lg me-1"></i>Crear usuario
+          </button>
+        </div>
+      </form>
+    </BaseModal>
 
     <!-- Modal: Cambiar rol -->
-    <div v-if="confirmRoleUser" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.4)">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title"><i class="bi bi-arrow-left-right me-2"></i>Cambiar rol</h5>
-            <button type="button" class="btn-close" @click="closeModals"></button>
-          </div>
-          <div class="modal-body">
-            ¿Cambiar el rol de <strong>{{ confirmRoleUser.username }}</strong> de
-            <span :class="`badge ${confirmRoleUser.role === 'ADMIN' ? 'bg-danger' : 'bg-success'}`">{{ confirmRoleUser.role }}</span>
-            a
-            <span :class="`badge ${confirmRoleUser.role === 'ADMIN' ? 'bg-success' : 'bg-danger'}`">{{ confirmRoleUser.role === 'ADMIN' ? 'USER' : 'ADMIN' }}</span>?
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary btn-sm" @click="closeModals">Cancelar</button>
-            <button class="btn btn-primary btn-sm" :disabled="actionLoading" @click="confirmChangeRole">
-              <span v-if="actionLoading" class="spinner-border spinner-border-sm me-1"></span>
-              Confirmar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <BaseModal
+      :show="!!confirmRoleUser"
+      title="Cambiar rol"
+      icon="bi-arrow-left-right"
+      @close="closeModals"
+    >
+      <template v-if="confirmRoleUser">
+        ¿Cambiar el rol de <strong>{{ confirmRoleUser.username }}</strong> de
+        <span :class="`badge ${confirmRoleUser.role === 'ADMIN' ? 'bg-danger' : 'bg-success'}`">{{ confirmRoleUser.role }}</span>
+        a
+        <span :class="`badge ${confirmRoleUser.role === 'ADMIN' ? 'bg-success' : 'bg-danger'}`">{{ confirmRoleUser.role === 'ADMIN' ? 'USER' : 'ADMIN' }}</span>?
+      </template>
+      <template #footer>
+        <button class="btn btn-secondary btn-sm" @click="closeModals">Cancelar</button>
+        <button class="btn btn-primary btn-sm" :disabled="actionLoading" @click="confirmChangeRole">
+          <span v-if="actionLoading" class="spinner-border spinner-border-sm me-1"></span>
+          Confirmar
+        </button>
+      </template>
+    </BaseModal>
 
     <!-- Modal: Eliminar usuario -->
-    <div v-if="confirmDeleteUser" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.4)">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-danger">
-          <div class="modal-header bg-danger text-white">
-            <h5 class="modal-title">
-              <i class="bi bi-exclamation-triangle me-2"></i>
-              {{ deleteStage === 1 ? '¿Seguro?' : '¿Muy seguro?' }}
-            </h5>
-            <button type="button" class="btn-close btn-close-white" @click="closeModals"></button>
-          </div>
-          <div class="modal-body">
-            <div v-if="deleteStage === 1">
-              ¿Eliminar el usuario <strong>{{ confirmDeleteUser.username }}</strong>?
-              Se borrarán todos sus huertos, cultivos, tareas y cosechas.
-            </div>
-            <div v-else class="text-danger fw-semibold">
-              <i class="bi bi-exclamation-circle me-1"></i>
-              Esta acción es <strong>irreversible</strong>. ¿Confirmas que quieres eliminar a
-              <strong>{{ confirmDeleteUser.username }}</strong> y todos sus datos?
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary btn-sm" @click="closeModals">Cancelar</button>
-            <button class="btn btn-danger btn-sm" :disabled="actionLoading" @click="confirmDelete">
-              <span v-if="actionLoading" class="spinner-border spinner-border-sm me-1"></span>
-              {{ deleteStage === 1 ? 'Sí, eliminar' : 'Sí, estoy seguro' }}
-            </button>
-          </div>
+    <BaseModal
+      :show="!!confirmDeleteUser"
+      :title="deleteStage === 1 ? '¿Seguro?' : '¿Muy seguro?'"
+      icon="bi-exclamation-triangle"
+      variant="danger"
+      @close="closeModals"
+    >
+      <template v-if="confirmDeleteUser">
+        <div v-if="deleteStage === 1">
+          ¿Eliminar el usuario <strong>{{ confirmDeleteUser.username }}</strong>?
+          Se borrarán todos sus huertos, cultivos, tareas y cosechas.
         </div>
-      </div>
-    </div>
+        <div v-else class="text-danger fw-semibold">
+          <i class="bi bi-exclamation-circle me-1"></i>
+          Esta acción es <strong>irreversible</strong>. ¿Confirmas que quieres eliminar a
+          <strong>{{ confirmDeleteUser.username }}</strong> y todos sus datos?
+        </div>
+      </template>
+      <template #footer>
+        <button class="btn btn-secondary btn-sm" @click="closeModals">Cancelar</button>
+        <button class="btn btn-danger btn-sm" :disabled="actionLoading" @click="confirmDelete">
+          <span v-if="actionLoading" class="spinner-border spinner-border-sm me-1"></span>
+          {{ deleteStage === 1 ? 'Sí, eliminar' : 'Sí, estoy seguro' }}
+        </button>
+      </template>
+    </BaseModal>
 
     <!-- Modal: Editar ficha de planta del sistema -->
-    <div v-if="showDetailForm" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.4)" @click.self="tryCloseDetailForm" @keydown.escape="tryCloseDetailForm">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow">
-          <div class="modal-header bg-success text-white">
-            <h5 class="modal-title">
-              <i class="bi bi-journal-text me-2"></i>Ficha — {{ editingDetail?.plantName }}
-            </h5>
-            <button type="button" class="btn-close btn-close-white" @click="tryCloseDetailForm"></button>
+    <BaseModal
+      :show="showDetailForm"
+      :title="`Ficha — ${editingDetail?.plantName ?? ''}`"
+      icon="bi-journal-text"
+      variant="success"
+      size="lg"
+      @close="tryCloseDetailForm"
+    >
+      <form @submit.prevent="handleDetailSave">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label" for="pd-latin-name">Nombre latino</label>
+            <input id="pd-latin-name" v-model="detailForm.latinName" class="form-control" placeholder="Solanum lycopersicum" />
           </div>
-          <form @submit.prevent="handleDetailSave">
-            <div class="modal-body">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label" for="pd-latin-name">Nombre latino</label>
-                  <input id="pd-latin-name" v-model="detailForm.latinName" class="form-control" placeholder="Solanum lycopersicum" />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label" for="pd-watering">Frecuencia de riego</label>
-                  <input id="pd-watering" v-model="detailForm.wateringFrequency" class="form-control" placeholder="3-4 veces/semana" />
-                </div>
-                <div class="col-12">
-                  <label class="form-label" for="pd-pests">Plagas <span class="text-muted small">(separadas por comas)</span></label>
-                  <input id="pd-pests" v-model="detailForm.pests" class="form-control" placeholder="Pulgón, Mosca blanca, Trips" />
-                </div>
-                <div class="col-12">
-                  <label class="form-label" for="pd-wikipedia">Enlace Wikipedia</label>
-                  <input id="pd-wikipedia" v-model="detailForm.wikipediaUrl" type="url" class="form-control" placeholder="https://es.wikipedia.org/wiki/..." />
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" @click="tryCloseDetailForm">Cancelar</button>
-              <button type="submit" class="btn btn-success" :disabled="savingDetail">
-                <span v-if="savingDetail" class="spinner-border spinner-border-sm me-1"></span>
-                <i v-else class="bi bi-check-lg me-1"></i>Guardar ficha
-              </button>
-            </div>
-          </form>
+          <div class="col-md-6">
+            <label class="form-label" for="pd-watering">Frecuencia de riego</label>
+            <input id="pd-watering" v-model="detailForm.wateringFrequency" class="form-control" placeholder="3-4 veces/semana" />
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="pd-pests">Plagas <span class="text-muted small">(separadas por comas)</span></label>
+            <input id="pd-pests" v-model="detailForm.pests" class="form-control" placeholder="Pulgón, Mosca blanca, Trips" />
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="pd-wikipedia">Enlace Wikipedia</label>
+            <input id="pd-wikipedia" v-model="detailForm.wikipediaUrl" type="url" class="form-control" placeholder="https://es.wikipedia.org/wiki/..." />
+          </div>
         </div>
-      </div>
-    </div>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button type="button" class="btn btn-outline-secondary" @click="tryCloseDetailForm">Cancelar</button>
+          <button type="submit" class="btn btn-success" :disabled="savingDetail">
+            <span v-if="savingDetail" class="spinner-border spinner-border-sm me-1"></span>
+            <i v-else class="bi bi-check-lg me-1"></i>Guardar ficha
+          </button>
+        </div>
+      </form>
+    </BaseModal>
 
     <!-- Modal: Crear / Editar planta del calendario -->
-    <div v-if="showCalendarPlantForm" ref="calendarPlantModalRef" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.45)" @click.self="tryCloseCalendarPlantForm" @keydown.escape="tryCloseCalendarPlantForm">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow">
-          <div class="modal-header bg-success text-white">
-            <h5 class="modal-title">
-              <i class="bi bi-plus-circle me-2"></i>
-              {{ editingCalendarPlant ? `Editar: ${editingCalendarPlant.plantName}` : 'Nueva planta' }}
-            </h5>
-            <button type="button" class="btn-close btn-close-white" @click="tryCloseCalendarPlantForm"></button>
-          </div>
-          <form @submit.prevent="handleCalendarPlantSave">
-            <div class="modal-body" style="max-height:62vh;overflow-y:auto;">
+    <BaseModal
+      :show="showCalendarPlantForm"
+      :title="editingCalendarPlant ? `Editar: ${editingCalendarPlant.plantName}` : 'Nueva planta'"
+      icon="bi-plus-circle"
+      variant="success"
+      size="lg"
+      scrollable
+      @close="tryCloseCalendarPlantForm"
+    >
+      <form ref="calendarPlantModalRef" @submit.prevent="handleCalendarPlantSave">
 
               <!-- Sección 1: Datos básicos -->
               <div class="d-flex align-items-center gap-2 mb-3">
@@ -911,11 +894,11 @@ watch(showCalendarPlantForm, async (val) => {
                   </div>
                 </div>
                 <div class="col-12">
-                  <label class="form-label small fw-semibold mb-1" style="color:#fd7e14">🌾 Cosecha — meses en los que se puede recolectar el fruto</label>
+                  <label class="form-label small fw-semibold mb-1" style="color:var(--harvest-600)">🌾 Cosecha — meses en los que se puede recolectar el fruto</label>
                   <div class="d-flex flex-wrap gap-1">
                     <button v-for="(name, i) in MONTHS" :key="`harv-${i}`" type="button"
                       :class="`btn btn-sm ${calendarPlantForm.harvestMonths.includes(i+1) ? 'text-white' : 'btn-outline-warning'}`"
-                      :style="calendarPlantForm.harvestMonths.includes(i+1) ? 'background-color:#fd7e14;border-color:#fd7e14' : ''"
+                      :style="calendarPlantForm.harvestMonths.includes(i+1) ? 'background-color:var(--harvest-600);border-color:var(--harvest-600)' : ''"
                       @click="toggleMonth(calendarPlantForm.harvestMonths, i+1)">{{ name }}</button>
                   </div>
                 </div>
@@ -991,41 +974,36 @@ watch(showCalendarPlantForm, async (val) => {
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" @click="tryCloseCalendarPlantForm">Cancelar</button>
-              <button type="submit" class="btn btn-success" :disabled="savingCalendarPlant">
-                <span v-if="savingCalendarPlant" class="spinner-border spinner-border-sm me-1"></span>
-                <i v-else class="bi bi-check-lg me-1"></i>
-                {{ editingCalendarPlant ? 'Guardar cambios' : 'Añadir planta' }}
-              </button>
-            </div>
-          </form>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button type="button" class="btn btn-outline-secondary" @click="tryCloseCalendarPlantForm">Cancelar</button>
+          <button type="submit" class="btn btn-success" :disabled="savingCalendarPlant">
+            <span v-if="savingCalendarPlant" class="spinner-border spinner-border-sm me-1"></span>
+            <i v-else class="bi bi-check-lg me-1"></i>
+            {{ editingCalendarPlant ? 'Guardar cambios' : 'Añadir planta' }}
+          </button>
         </div>
-      </div>
-    </div>
+      </form>
+    </BaseModal>
 
     <!-- Modal: Confirmar eliminar planta del calendario -->
-    <div v-if="confirmDeleteCalendarPlant" class="modal d-block" tabindex="-1" style="background:rgba(0,0,0,.4)">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-danger">
-          <div class="modal-header bg-danger text-white">
-            <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Eliminar planta</h5>
-            <button type="button" class="btn-close btn-close-white" @click="confirmDeleteCalendarPlant = null"></button>
-          </div>
-          <div class="modal-body">
-            ¿Eliminar <strong>{{ confirmDeleteCalendarPlant.emoji }} {{ confirmDeleteCalendarPlant.plantName }}</strong> del calendario?
-            Dejará de aparecer en el calendario público.
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary btn-sm" @click="confirmDeleteCalendarPlant = null">Cancelar</button>
-            <button class="btn btn-danger btn-sm" :disabled="deletingCalendarPlant" @click="doDeleteCalendarPlant">
-              <span v-if="deletingCalendarPlant" class="spinner-border spinner-border-sm me-1"></span>
-              Eliminar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <BaseModal
+      :show="!!confirmDeleteCalendarPlant"
+      title="Eliminar planta"
+      icon="bi-exclamation-triangle"
+      variant="danger"
+      @close="confirmDeleteCalendarPlant = null"
+    >
+      <template v-if="confirmDeleteCalendarPlant">
+        ¿Eliminar <strong>{{ confirmDeleteCalendarPlant.emoji }} {{ confirmDeleteCalendarPlant.plantName }}</strong> del calendario?
+        Dejará de aparecer en el calendario público.
+      </template>
+      <template #footer>
+        <button class="btn btn-secondary btn-sm" @click="confirmDeleteCalendarPlant = null">Cancelar</button>
+        <button class="btn btn-danger btn-sm" :disabled="deletingCalendarPlant" @click="doDeleteCalendarPlant">
+          <span v-if="deletingCalendarPlant" class="spinner-border spinner-border-sm me-1"></span>
+          Eliminar
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>

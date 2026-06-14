@@ -1,9 +1,11 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import { useTheme } from '@/composables/useTheme'
 
 const authStore = useAuthStore()
 const router = useRouter()
+const { isDark, toggle: toggleTheme } = useTheme()
 
 function logout() {
   authStore.logout()
@@ -70,8 +72,18 @@ function logout() {
         </ul>
       </div>
 
-      <!-- Always-visible right side: admin badge + user dropdown -->
+      <!-- Always-visible right side: theme toggle + admin badge + user dropdown -->
       <div class="nav-actions d-flex align-items-center gap-2">
+        <button
+          class="theme-toggle"
+          type="button"
+          :aria-label="isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+          :title="isDark ? 'Tema claro' : 'Tema oscuro'"
+          @click="toggleTheme"
+        >
+          <i class="bi" :class="isDark ? 'bi-sun-fill' : 'bi-moon-stars-fill'" aria-hidden="true"></i>
+        </button>
+
         <span v-if="authStore.isAdmin" class="admin-badge">
           <i class="bi bi-shield-check" aria-hidden="true"></i>
           <span>Admin</span>
@@ -122,9 +134,9 @@ function logout() {
 
 <style scoped>
 .huerto-nav {
-  background: var(--off-white);
+  background: var(--bg-elevated);
   border-bottom: 1px solid var(--border-subtle);
-  box-shadow: 0 1px 12px rgba(100, 70, 30, 0.07);
+  box-shadow: var(--shadow-xs);
   position: sticky;
   top: 0;
   z-index: 1030;
@@ -221,12 +233,39 @@ function logout() {
     position: absolute;
     top: 60px;
     left: 0; right: 0;
-    background: var(--off-white);
+    background: var(--bg-elevated);
     border-bottom: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-md);
     padding: 8px 12px 16px;
     z-index: 1000;
   }
+}
+
+/* Theme toggle */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--border-subtle);
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--t-base);
+}
+.theme-toggle:hover {
+  border-color: var(--green-400);
+  color: var(--green-600);
+  background: var(--green-50);
+}
+.theme-toggle:hover i {
+  transform: rotate(20deg);
+}
+.theme-toggle i {
+  transition: transform var(--t-base);
 }
 
 /* Admin badge */

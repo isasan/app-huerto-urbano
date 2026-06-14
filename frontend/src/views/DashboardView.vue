@@ -82,11 +82,11 @@ const qualityLabel = { MALA: 'Mala', NORMAL: 'Normal', BUENA: 'Buena', EXCELENTE
 const qualityStars = { MALA: '★', NORMAL: '★★', BUENA: '★★★', EXCELENTE: '★★★★' }
 
 const typeConfig = {
-  RIEGO:      { icon: 'bi-droplet-fill',  color: 'blue',  bg: '#DBEAFE', fg: '#1D4ED8', emoji: '💧' },
-  FERTILIZAR: { icon: 'bi-flower2',       color: 'green', bg: '#D1FAE5', fg: '#059669', emoji: '🌱' },
-  PODAR:      { icon: 'bi-scissors',      color: 'amber', bg: '#FEF3C7', fg: '#B45309', emoji: '✂️' },
-  TRATAR:     { icon: 'bi-shield-fill',   color: 'red',   bg: '#FEE2E2', fg: '#B91C1C', emoji: '🛡️' },
-  OTRO:       { icon: 'bi-three-dots',    color: 'stone', bg: '#F5F5F4', fg: '#78716C', emoji: '📋' },
+  RIEGO:      { icon: 'bi-droplet-fill',  color: 'blue',  bg: 'var(--blue-100)',  fg: 'var(--blue-700)',  emoji: '💧' },
+  FERTILIZAR: { icon: 'bi-flower2',       color: 'green', bg: 'var(--green-100)', fg: 'var(--green-700)', emoji: '🌱' },
+  PODAR:      { icon: 'bi-scissors',      color: 'amber', bg: 'var(--amber-100)', fg: 'var(--amber-700)', emoji: '✂️' },
+  TRATAR:     { icon: 'bi-shield-fill',   color: 'red',   bg: 'var(--red-100)',   fg: 'var(--red-700)',   emoji: '🛡️' },
+  OTRO:       { icon: 'bi-three-dots',    color: 'stone', bg: 'var(--bg-subtle)', fg: 'var(--stone-500)', emoji: '📋' },
 }
 
 function getTypeConfig(type) {

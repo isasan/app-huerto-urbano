@@ -181,7 +181,7 @@ const features = [
 /* ── Hero ── */
 .hero-section {
   position: relative;
-  background: linear-gradient(135deg, #065F46 0%, #059669 50%, #10B981 100%);
+  background: linear-gradient(135deg, var(--green-800) 0%, var(--green-600) 50%, var(--green-500) 100%);
   border-radius: var(--r-xl);
   padding: 60px 40px;
   text-align: center;
@@ -258,7 +258,7 @@ const features = [
   gap: 8px;
   padding: 12px 28px;
   background: white;
-  color: var(--green-700) !important;
+  color: var(--green-800) !important;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.95rem;
@@ -423,12 +423,7 @@ const features = [
 }
 .legend-badge.sembrar      { background: var(--green-100); color: var(--green-700); }
 .legend-badge.trasplantar  { background: var(--amber-100); color: var(--amber-700); }
-.legend-badge.cosechar     { background: #FFF0E0; color: #C05621; }
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50%       { transform: scale(1.3); opacity: 0.7; }
-}
+.legend-badge.cosechar     { background: var(--harvest-100); color: var(--harvest-600); }
 
 @media (max-width: 600px) {
   .calendar-section { padding: 20px 16px; }

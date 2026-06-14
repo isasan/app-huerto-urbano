@@ -54,7 +54,7 @@ const navItems = [
 .huerto-sidebar {
   width: 220px;
   min-height: calc(100vh - 60px);
-  background: var(--off-white);
+  background: var(--bg-elevated);
   border-right: 1px solid var(--border-subtle);
   padding: 20px 12px;
   display: flex;
@@ -112,7 +112,7 @@ const navItems = [
 }
 .sidebar-link.active {
   background: linear-gradient(135deg, var(--green-600) 0%, var(--green-500) 100%);
-  color: white;
+  color: var(--text-on-accent);
   box-shadow: 0 3px 12px rgba(5, 150, 105, 0.3);
 }
 .sidebar-link.active::before {
@@ -160,7 +160,7 @@ const navItems = [
 }
 .admin-link.active {
   background: linear-gradient(135deg, var(--red-600), #F87171);
-  color: white;
+  color: var(--text-on-accent);
   box-shadow: 0 3px 12px rgba(220, 38, 38, 0.25);
 }
 

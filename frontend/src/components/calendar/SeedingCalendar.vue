@@ -61,20 +61,31 @@ function openDetail(plant) {
 
 <template>
   <div>
-    <div v-if="loading" class="text-center py-5">
-      <div class="spinner-border text-success" role="status"></div>
-      <p class="text-muted mt-2 small">Cargando plantas...</p>
+    <div v-if="loading" class="row g-3" aria-busy="true" aria-label="Cargando plantas">
+      <div v-for="i in 8" :key="i" class="col-12 col-sm-6 col-md-4 col-xl-3">
+        <div class="plant-skel panel-card">
+          <div class="skel skel-emoji"></div>
+          <div class="skel skel-name"></div>
+          <div class="skel skel-info"></div>
+        </div>
+      </div>
     </div>
 
-    <div v-else-if="error" class="alert alert-danger">{{ error }}</div>
-
-    <div v-else-if="plants.length === 0" class="text-center py-5">
-      <span style="font-size: 3rem;">🌾</span>
-      <p class="text-muted mt-2">No hay actividad recomendada para este mes y hemisferio.</p>
-      <p class="text-muted small">Prueba con otro mes o cambia el hemisferio.</p>
+    <div v-else-if="error" class="empty-state panel-card" style="min-height: 200px" role="alert">
+      <i class="bi bi-cloud-slash empty-icon" aria-hidden="true"></i>
+      <p class="mb-3">{{ error }}</p>
+      <button class="btn btn-outline-success btn-sm" @click="loadPlants">
+        <i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>Reintentar
+      </button>
     </div>
 
-    <div v-else class="row g-3">
+    <div v-else-if="plants.length === 0" class="empty-state py-5" role="status">
+      <span class="empty-icon" aria-hidden="true">🌾</span>
+      <p class="text-muted mb-1">No hay actividad recomendada para este mes y hemisferio.</p>
+      <p class="text-muted small mb-0">Prueba con otro mes o cambia el hemisferio.</p>
+    </div>
+
+    <div v-else class="row g-3 stagger">
       <div
         v-for="plant in plants"
         :key="plant.name"
@@ -85,10 +96,21 @@ function openDetail(plant) {
     </div>
 
     <PlantDetailModal
-      v-if="showModal"
+      :show="showModal"
       :plant="selectedPlant"
       :detail="selectedDetail"
       @close="showModal = false"
     />
   </div>
 </template>
+
+<style scoped>
+.plant-skel {
+  padding: 20px;
+  gap: 10px;
+  align-items: center;
+}
+.skel-emoji { height: 48px; width: 48px; border-radius: 50%; }
+.skel-name  { height: 16px; width: 60%; }
+.skel-info  { height: 12px; width: 80%; }
+</style>
