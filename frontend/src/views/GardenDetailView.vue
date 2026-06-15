@@ -6,6 +6,7 @@ import { useToast } from '@/composables/useToast'
 import { cropService } from '@/services/cropService.js'
 import CropList from '@/components/crops/CropList.vue'
 import CropForm from '@/components/crops/CropForm.vue'
+import BaseModal from '@/components/ui/BaseModal.vue'
 
 const route = useRoute()
 const gardenStore = useGardenStore()
@@ -193,8 +194,8 @@ async function handleDeleteCrop(cropId) {
                 </button>
               </div>
 
-              <div v-if="gardenStore.plots.length === 0" class="text-center text-muted py-3">
-                <div class="mb-1">🟫</div>
+              <div v-if="gardenStore.plots.length === 0" class="empty-state py-3">
+                <span class="empty-icon" style="font-size: 1.8rem" aria-hidden="true">🟫</span>
                 <p class="small mb-1 fw-semibold">Sin parcelas</p>
                 <p class="small mb-2">Añade una parcela para organizar tus cultivos</p>
                 <button class="btn btn-sm btn-outline-success" @click="openCreatePlot">
@@ -202,13 +203,11 @@ async function handleDeleteCrop(cropId) {
                 </button>
               </div>
 
-              <div class="list-group list-group-flush">
+              <div class="plot-list">
                 <div
                   v-for="plot in gardenStore.plots"
                   :key="plot.id"
-                  :class="['list-group-item list-group-item-action border-0 rounded px-2',
-                           selectedPlot?.id === plot.id ? 'active' : '']"
-                  style="cursor: pointer;"
+                  :class="['plot-item', { active: selectedPlot?.id === plot.id }]"
                   role="button"
                   tabindex="0"
                   @click="selectPlot(plot)"
@@ -217,10 +216,10 @@ async function handleDeleteCrop(cropId) {
                   <div class="d-flex justify-content-between align-items-center">
                     <span>
                       <i class="bi bi-grid me-1"></i>{{ plot.name }}
-                      <span class="text-muted small ms-1" :class="selectedPlot?.id === plot.id ? 'text-white-50' : ''">({{ plot.sizeM2 }}m²)</span>
+                      <span class="plot-size ms-1">({{ plot.sizeM2 }}m²)</span>
                     </span>
                     <div class="dropdown" @click.stop>
-                      <button class="btn btn-sm border-0 p-0 ms-1" data-bs-toggle="dropdown">
+                      <button class="btn btn-sm border-0 p-0 ms-1" data-bs-toggle="dropdown" aria-label="Opciones de la parcela">
                         <i class="bi bi-three-dots-vertical"></i>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-end">
@@ -260,13 +259,13 @@ async function handleDeleteCrop(cropId) {
                 </button>
               </div>
 
-              <div v-if="!selectedPlot" class="text-center text-muted py-4">
-                <div class="mb-2">🟫</div>
-                Selecciona una parcela para ver sus cultivos
+              <div v-if="!selectedPlot" class="empty-state py-4">
+                <span class="empty-icon" aria-hidden="true">🟫</span>
+                <p class="mb-0 small">Selecciona una parcela para ver sus cultivos</p>
               </div>
 
               <template v-else>
-                <div v-if="showCropForm" class="border rounded p-3 mb-3">
+                <div v-if="showCropForm" class="crop-form-panel animate-in">
                   <CropForm
                     :initial="editingCrop || {}"
                     :plot-id="selectedPlot.id"
@@ -277,13 +276,14 @@ async function handleDeleteCrop(cropId) {
                 </div>
 
                 <CropList
+                  v-if="crops.length > 0"
                   :crops="crops"
                   @edit="handleEditCrop"
                   @delete="handleDeleteCrop"
                 />
 
-                <div v-if="crops.length === 0 && !showCropForm" class="text-center text-muted py-4">
-                  <div class="mb-2 fs-2">🌿</div>
+                <div v-if="crops.length === 0 && !showCropForm" class="empty-state py-4">
+                  <span class="empty-icon" aria-hidden="true">🌿</span>
                   <p class="fw-semibold mb-1">Esta parcela está vacía</p>
                   <p class="small mb-2">Añade tu primer cultivo para empezar a hacer seguimiento</p>
                   <button class="btn btn-sm btn-outline-success" @click="openCreateCrop">
@@ -298,38 +298,67 @@ async function handleDeleteCrop(cropId) {
     </div>
 
     <!-- Modal crear/editar parcela -->
-    <div v-if="showPlotForm" class="modal d-block" style="background: rgba(0,0,0,0.4);">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">{{ editingPlot ? 'Editar parcela' : 'Nueva parcela' }}</h5>
-            <button type="button" class="btn-close" @click="tryClosePlotForm"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="handlePlotSave">
-              <div class="mb-3">
-                <label for="plot-name" class="form-label">Nombre <span class="text-danger">*</span></label>
-                <input id="plot-name" v-model="plotForm.name" type="text" class="form-control" required placeholder="Parcela A" />
-              </div>
-              <div class="mb-3">
-                <label for="plot-size" class="form-label">Tamaño (m²)</label>
-                <input id="plot-size" v-model.number="plotForm.sizeM2" type="number" step="0.1" min="0" class="form-control" />
-              </div>
-              <div class="mb-3">
-                <label for="plot-soil" class="form-label">Tipo de suelo</label>
-                <input id="plot-soil" v-model="plotForm.soilType" type="text" class="form-control" placeholder="Arcilloso, arenoso, franco..." />
-              </div>
-              <div class="d-flex gap-2 justify-content-end">
-                <button type="button" class="btn btn-outline-secondary" @click="tryClosePlotForm">Cancelar</button>
-                <button type="submit" class="btn btn-success" :disabled="savingPlot">
-                  <span v-if="savingPlot" class="spinner-border spinner-border-sm me-1"></span>
-                  Guardar
-                </button>
-              </div>
-            </form>
-          </div>
+    <BaseModal
+      :show="showPlotForm"
+      :title="editingPlot ? 'Editar parcela' : 'Nueva parcela'"
+      :icon="editingPlot ? 'bi-pencil' : 'bi-grid'"
+      @close="tryClosePlotForm"
+    >
+      <form @submit.prevent="handlePlotSave">
+        <div class="mb-3">
+          <label for="plot-name" class="form-label">Nombre <span class="text-danger">*</span></label>
+          <input id="plot-name" v-model="plotForm.name" type="text" class="form-control" required placeholder="Parcela A" />
         </div>
-      </div>
-    </div>
+        <div class="mb-3">
+          <label for="plot-size" class="form-label">Tamaño (m²)</label>
+          <input id="plot-size" v-model.number="plotForm.sizeM2" type="number" step="0.1" min="0" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label for="plot-soil" class="form-label">Tipo de suelo</label>
+          <input id="plot-soil" v-model="plotForm.soilType" type="text" class="form-control" placeholder="Arcilloso, arenoso, franco..." />
+        </div>
+        <div class="d-flex gap-2 justify-content-end">
+          <button type="button" class="btn btn-outline-secondary" @click="tryClosePlotForm">Cancelar</button>
+          <button type="submit" class="btn btn-success" :disabled="savingPlot">
+            <span v-if="savingPlot" class="spinner-border spinner-border-sm me-1"></span>
+            Guardar
+          </button>
+        </div>
+      </form>
+    </BaseModal>
   </div>
 </template>
+
+<style scoped>
+.plot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.plot-item {
+  padding: 9px 10px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.plot-item:hover { background: var(--green-50); }
+.plot-item.active {
+  background: var(--green-100);
+  color: var(--green-700);
+  font-weight: 700;
+}
+.plot-size {
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+.plot-item.active .plot-size { color: var(--green-700); opacity: 0.75; }
+.crop-form-panel {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+</style>

@@ -25,37 +25,67 @@ async function handleLogin() {
 </script>
 
 <template>
-  <div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
-    <div class="card shadow border-0" style="width: 400px;">
-      <div class="card-body p-4">
-        <div class="text-center mb-4">
-          <span class="fs-1">🌱</span>
-          <h4 class="fw-bold mt-2">Iniciar sesión</h4>
+  <div class="auth-page">
+    <div class="auth-orb auth-orb-1" aria-hidden="true"></div>
+    <div class="auth-orb auth-orb-2" aria-hidden="true"></div>
+
+    <div class="auth-card" style="max-width: 410px;">
+      <div class="text-center">
+        <RouterLink to="/" class="auth-brand">
+          <span aria-hidden="true">🌿</span> HuertoApp
+        </RouterLink>
+        <h1 class="auth-title">Iniciar sesión</h1>
+        <p class="auth-sub">Bienvenido de nuevo a tu huerto</p>
+      </div>
+
+      <form @submit.prevent="handleLogin">
+        <div class="mb-3">
+          <label class="form-label" for="login-username">Usuario</label>
+          <div class="input-icon">
+            <i class="bi bi-person" aria-hidden="true"></i>
+            <input
+              id="login-username"
+              v-model="form.username"
+              type="text"
+              class="form-control"
+              required
+              autocomplete="username"
+              placeholder="Tu nombre de usuario"
+            />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="login-password">Contraseña</label>
+          <div class="input-icon">
+            <i class="bi bi-lock" aria-hidden="true"></i>
+            <input
+              id="login-password"
+              v-model="form.password"
+              type="password"
+              class="form-control"
+              required
+              autocomplete="current-password"
+              placeholder="••••••••"
+            />
+          </div>
         </div>
 
-        <form @submit.prevent="handleLogin">
-          <div class="mb-3">
-            <label class="form-label">Usuario</label>
-            <input v-model="form.username" type="text" class="form-control" required autocomplete="username" />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Contraseña</label>
-            <input v-model="form.password" type="password" class="form-control" required autocomplete="current-password" />
-          </div>
+        <div v-if="error" class="auth-error mb-3" role="alert">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          {{ error }}
+        </div>
 
-          <div v-if="error" class="alert alert-danger py-2 small">{{ error }}</div>
+        <button type="submit" class="btn btn-success w-100" :disabled="loading">
+          <span v-if="loading" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+          <i v-else class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i>
+          Entrar
+        </button>
+      </form>
 
-          <button type="submit" class="btn btn-success w-100" :disabled="loading">
-            <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
-            Entrar
-          </button>
-        </form>
-
-        <p class="text-center mt-3 mb-0 small">
-          ¿No tienes cuenta?
-          <RouterLink to="/register" class="text-success fw-semibold">Regístrate</RouterLink>
-        </p>
-      </div>
+      <p class="auth-alt">
+        ¿No tienes cuenta?
+        <RouterLink to="/register">Regístrate</RouterLink>
+      </p>
     </div>
   </div>
 </template>

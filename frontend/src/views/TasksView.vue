@@ -4,6 +4,7 @@ import { taskService } from '@/services/taskService.js'
 import { gardenService } from '@/services/gardenService.js'
 import { useToast } from '@/composables/useToast'
 import TaskBoard from '@/components/tasks/TaskBoard.vue'
+import BaseModal from '@/components/ui/BaseModal.vue'
 
 const toast = useToast()
 const tasks = ref([])
@@ -143,55 +144,67 @@ async function deleteTask(id) {
 </script>
 
 <template>
-  <div>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4 class="mb-0"><i class="bi bi-check2-square me-2 text-primary"></i>Tareas</h4>
+  <div class="tasks-view">
+    <div class="page-header animate-up">
+      <div>
+        <h1 class="page-title"><span aria-hidden="true">✅</span> Tareas</h1>
+        <p class="page-sub">Planifica los cuidados de tu huerto</p>
+      </div>
       <button class="btn btn-success" @click="openCreate">
         <i class="bi bi-plus-lg me-1"></i>Nueva tarea
       </button>
     </div>
 
     <!-- Filtros -->
-    <div class="card border-0 shadow-sm mb-4">
-      <div class="card-body py-2">
-        <div class="d-flex flex-wrap gap-2 align-items-center">
-          <div class="btn-group btn-group-sm flex-wrap" role="group">
-            <button
-              v-for="f in [
-                { key: 'all', label: 'Todas' },
-                { key: 'pending', label: 'Pendientes' },
-                { key: 'completed', label: 'Completadas' },
-                { key: 'overdue', label: `Vencidas${overdueCount > 0 ? ' (' + overdueCount + ')' : ''}` }
-              ]"
-              :key="f.key"
-              :class="['btn', activeFilter === f.key ? 'btn-primary' : 'btn-outline-primary',
-                       f.key === 'overdue' && overdueCount > 0 ? 'text-danger border-danger' : '']"
-              @click="activeFilter = f.key"
-            >
-              {{ f.label }}
-            </button>
-          </div>
-          <select v-model="activeType" class="form-select form-select-sm w-auto">
-            <option value="">Todos los tipos</option>
-            <option value="RIEGO">💧 Riego</option>
-            <option value="FERTILIZAR">🌱 Fertilizar</option>
-            <option value="PODAR">✂️ Podar</option>
-            <option value="TRATAR">🛡️ Tratar</option>
-            <option value="OTRO">📋 Otro</option>
-          </select>
+    <div class="filter-bar animate-up" role="group" aria-label="Filtrar tareas">
+      <div class="seg-toggle">
+        <button
+          v-for="f in [
+            { key: 'all', label: 'Todas' },
+            { key: 'pending', label: 'Pendientes' },
+            { key: 'completed', label: 'Completadas' },
+            { key: 'overdue', label: 'Vencidas' }
+          ]"
+          :key="f.key"
+          class="seg-btn"
+          :class="{ active: activeFilter === f.key }"
+          :aria-pressed="activeFilter === f.key"
+          @click="activeFilter = f.key"
+        >
+          {{ f.label }}
+          <span v-if="f.key === 'overdue' && overdueCount > 0" class="seg-count">{{ overdueCount }}</span>
+        </button>
+      </div>
+      <select v-model="activeType" class="form-select form-select-sm w-auto" aria-label="Filtrar por tipo">
+        <option value="">Todos los tipos</option>
+        <option value="RIEGO">💧 Riego</option>
+        <option value="FERTILIZAR">🌱 Fertilizar</option>
+        <option value="PODAR">✂️ Podar</option>
+        <option value="TRATAR">🛡️ Tratar</option>
+        <option value="OTRO">📋 Otro</option>
+      </select>
+    </div>
+
+    <div v-if="loading" class="row g-3" aria-busy="true" aria-label="Cargando tareas">
+      <div v-for="i in 3" :key="i" class="col-md-6 col-xl-4">
+        <div class="task-skel panel-card">
+          <div class="skel skel-head"></div>
+          <div class="skel skel-row"></div>
+          <div class="skel skel-row"></div>
         </div>
       </div>
     </div>
 
-    <div v-if="loading" class="text-center py-4">
-      <div class="spinner-border text-success"></div>
-    </div>
-
     <template v-else>
-      <div v-if="filteredTasks.length === 0" class="text-center py-5 text-muted">
-        <div class="mb-2 fs-1">✅</div>
-        <p class="fw-semibold mb-1">No hay tareas aquí</p>
-        <p class="small mb-3">
+      <div
+        v-if="filteredTasks.length === 0"
+        class="empty-state panel-card"
+        style="min-height: 220px"
+        role="status"
+      >
+        <span class="empty-icon" aria-hidden="true">✅</span>
+        <p class="fw-semibold mb-1" style="font-size: 0.95rem">No hay tareas aquí</p>
+        <p class="mb-3" style="font-size: 0.85rem; color: var(--text-light)">
           {{ activeFilter === 'all' ? 'Crea tu primera tarea para organizar el huerto' : 'Prueba con otro filtro' }}
         </p>
         <button v-if="activeFilter === 'all'" class="btn btn-success" @click="openCreate">
@@ -220,56 +233,127 @@ async function deleteTask(id) {
     </template>
 
     <!-- Modal crear/editar tarea -->
-    <div v-if="showForm" class="modal d-block" style="background: rgba(0,0,0,0.4);">
-      <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">{{ editingTask ? 'Editar tarea' : 'Nueva tarea' }}</h5>
-            <button type="button" class="btn-close" @click="tryCloseForm"></button>
+    <BaseModal
+      :show="showForm"
+      :title="editingTask ? 'Editar tarea' : 'Nueva tarea'"
+      :icon="editingTask ? 'bi-pencil' : 'bi-check2-square'"
+      size="lg"
+      scrollable
+      @close="tryCloseForm"
+    >
+      <form @submit.prevent="handleSave">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Título <span class="text-danger">*</span></label>
+            <input v-model="form.title" class="form-control" required />
           </div>
-          <div class="modal-body">
-            <form @submit.prevent="handleSave">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">Título <span class="text-danger">*</span></label>
-                  <input v-model="form.title" class="form-control" required />
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label">Tipo <span class="text-danger">*</span></label>
-                  <select v-model="form.type" class="form-select">
-                    <option value="RIEGO">💧 Riego</option>
-                    <option value="FERTILIZAR">🌱 Fertilizar</option>
-                    <option value="PODAR">✂️ Podar</option>
-                    <option value="TRATAR">🛡️ Tratar</option>
-                    <option value="OTRO">📋 Otro</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label">Fecha límite</label>
-                  <input v-model="form.dueDate" type="date" class="form-control" />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Huerto <span class="text-danger">*</span></label>
-                  <select v-model.number="form.gardenId" class="form-select" required>
-                    <option v-for="g in gardens" :key="g.id" :value="g.id">{{ g.name }}</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Notas</label>
-                  <input v-model="form.notes" class="form-control" />
-                </div>
-              </div>
-              <div class="d-flex gap-2 mt-3 justify-content-end">
-                <button type="button" class="btn btn-outline-secondary" @click="tryCloseForm">Cancelar</button>
-                <button type="submit" class="btn btn-success" :disabled="saving">
-                  <span v-if="saving" class="spinner-border spinner-border-sm me-1"></span>
-                  {{ editingTask ? 'Guardar cambios' : 'Crear tarea' }}
-                </button>
-              </div>
-            </form>
+          <div class="col-md-3">
+            <label class="form-label">Tipo <span class="text-danger">*</span></label>
+            <select v-model="form.type" class="form-select">
+              <option value="RIEGO">💧 Riego</option>
+              <option value="FERTILIZAR">🌱 Fertilizar</option>
+              <option value="PODAR">✂️ Podar</option>
+              <option value="TRATAR">🛡️ Tratar</option>
+              <option value="OTRO">📋 Otro</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Fecha límite</label>
+            <input v-model="form.dueDate" type="date" class="form-control" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Huerto <span class="text-danger">*</span></label>
+            <select v-model.number="form.gardenId" class="form-select" required>
+              <option v-for="g in gardens" :key="g.id" :value="g.id">{{ g.name }}</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Notas</label>
+            <input v-model="form.notes" class="form-control" />
           </div>
         </div>
-      </div>
-    </div>
+        <div class="d-flex gap-2 mt-3 justify-content-end">
+          <button type="button" class="btn btn-outline-secondary" @click="tryCloseForm">Cancelar</button>
+          <button type="submit" class="btn btn-success" :disabled="saving">
+            <span v-if="saving" class="spinner-border spinner-border-sm me-1"></span>
+            {{ editingTask ? 'Guardar cambios' : 'Crear tarea' }}
+          </button>
+        </div>
+      </form>
+    </BaseModal>
   </div>
 </template>
+
+<style scoped>
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.page-title {
+  font-family: var(--font-display) !important;
+  font-size: 1.6rem !important;
+  font-weight: 800 !important;
+  color: var(--text-primary) !important;
+  margin-bottom: 4px;
+}
+.page-sub {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.seg-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  background: var(--bg-subtle);
+  border-radius: var(--r-full);
+  padding: 3px;
+  gap: 3px;
+}
+.seg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: var(--r-full);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.84rem;
+  border: none;
+  cursor: pointer;
+  transition: all var(--t-base);
+  background: transparent;
+  color: var(--text-muted);
+}
+.seg-btn.active {
+  background: var(--green-600);
+  color: var(--text-on-accent);
+  box-shadow: 0 2px 8px rgba(5,150,105,0.3);
+}
+.seg-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--r-full);
+  font-size: 0.7rem;
+  font-weight: 800;
+  background: var(--red-600);
+  color: var(--text-on-accent);
+}
+.task-skel { padding: 18px; gap: 12px; }
+.skel-head { height: 22px; width: 50%; }
+.skel-row  { height: 38px; width: 100%; }
+</style>

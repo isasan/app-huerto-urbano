@@ -10,6 +10,7 @@ docs/plans/
 # ── Base de datos local H2 ────────────────────────
 data/*.db
 data/*.trace.db
+backend/data/
 
 # ── Backend (Maven) ───────────────────────────────
 backend/target/
