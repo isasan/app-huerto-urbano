@@ -1,7 +1,7 @@
 # 🌱 HuertoApp
 
-![Java](https://img.shields.io/badge/Java_17-ED8B00?style=flat&logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot_3-6DB33F?style=flat&logo=springboot&logoColor=white)
+![Java](https://img.shields.io/badge/Java_21-ED8B00?style=flat&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot_4-6DB33F?style=flat&logo=springboot&logoColor=white)
 ![Vue 3](https://img.shields.io/badge/Vue_3-42b883?style=flat&logo=vuedotjs&logoColor=white)
 ![Bootstrap 5](https://img.shields.io/badge/Bootstrap_5-7952B3?style=flat&logo=bootstrap&logoColor=white)
 ![H2](https://img.shields.io/badge/H2_Database-003545?style=flat&logo=h2&logoColor=white)
@@ -13,7 +13,7 @@
 
 Aplicación fullstack para gestionar huertos urbanos domésticos. Permite controlar parcelas, cultivos, tareas de mantenimiento, registros de cosecha y consultar el clima en tiempo real.
 
-> **Proyecto de portafolio** — demuestra una arquitectura REST completa con Spring Boot 3 + Vue 3.
+> **Proyecto de portafolio** — demuestra una arquitectura REST completa con Spring Boot 4 + Vue 3.
 
 ---
 
@@ -34,23 +34,23 @@ Aplicación fullstack para gestionar huertos urbanos domésticos. Permite contro
 ### Backend
 | Tecnología | Versión | Uso |
 |------------|---------|-----|
-| Java | 17 | Lenguaje principal |
-| Spring Boot | 3.x | Framework web |
-| Spring Security | 6.x | Autenticación y autorización |
-| Spring Data JPA | 3.x | Capa de persistencia |
+| Java | 21 | Lenguaje principal |
+| Spring Boot | 4.x | Framework web |
+| Spring Security | 7.x | Autenticación y autorización |
+| Spring Data JPA | 4.x | Capa de persistencia |
 | H2 Database | 2.x | Base de datos embebida |
-| JWT (jjwt) | 0.11+ | Tokens de autenticación |
-| Spring WebFlux WebClient | 3.x | Cliente HTTP reactivo (clima) |
+| JWT (jjwt) | 0.13 | Tokens de autenticación |
+| Spring WebFlux WebClient | 4.x | Cliente HTTP reactivo (clima) |
 | Lombok | — | Reducción de boilerplate |
-| SpringDoc OpenAPI | 2.x | Documentación Swagger |
+| SpringDoc OpenAPI | 3.x | Documentación Swagger |
 
 ### Frontend
 | Tecnología | Versión | Uso |
 |------------|---------|-----|
 | Vue | 3 | Framework UI (Composition API) |
-| Vite | 5.x | Bundler y dev server |
-| Pinia | 2.x | Gestión de estado |
-| Vue Router | 4.x | Enrutamiento SPA |
+| Vite | 8.x | Bundler y dev server |
+| Pinia | 3.x | Gestión de estado |
+| Vue Router | 5.x | Enrutamiento SPA |
 | Axios | 1.x | Cliente HTTP |
 | Bootstrap | 5.x | Estilos y componentes |
 | Bootstrap Icons | 1.x | Iconografía |
@@ -59,9 +59,9 @@ Aplicación fullstack para gestionar huertos urbanos domésticos. Permite contro
 
 ## Requisitos previos
 
-- **Java 17+** — [descargar](https://adoptium.net/)
+- **Java 21+** — [descargar](https://adoptium.net/) (requerido por Spring Boot 4)
 - **Maven 3.8+** — incluido en la mayoría de IDEs, o instalar desde [maven.apache.org](https://maven.apache.org/)
-- **Node.js 18+** y **npm 9+** — [descargar](https://nodejs.org/)
+- **Node.js 20+** y **npm 9+** — [descargar](https://nodejs.org/) (requerido por Vite 8)
 
 ---
 
@@ -214,7 +214,7 @@ huertoapp/
 │       │   ├── request/     # DTOs de entrada
 │       │   └── response/    # DTOs de salida
 │       ├── security/        # JWT provider + filter + UserDetailsService
-│       ├── config/          # SecurityConfig, OpenApiConfig
+│       ├── config/          # SecurityConfig, OpenApiConfig, WebClientConfig
 │       ├── exception/       # GlobalExceptionHandler
 │       └── data/            # SeedingCalendarData (datos estáticos en memoria)
 └── frontend/
@@ -226,8 +226,9 @@ huertoapp/
         │   ├── tasks/       # TaskBoard, TaskItem
         │   ├── calendar/    # SeedingCalendar, PlantCard
         │   ├── weather/     # WeatherWidget
+        │   ├── ui/          # BaseModal
         │   └── GlobalToast.vue
-        ├── composables/     # useToast
+        ├── composables/     # useToast, useTheme (modo oscuro)
         ├── views/           # Una vista por ruta
         ├── services/        # Clientes Axios por entidad
         ├── stores/          # Pinia: auth, garden, weather
@@ -248,6 +249,7 @@ huertoapp/
 - **Dashboard** — resumen en tiempo real con tareas del día, cultivos listos y últimas cosechas
 - **Panel de administración** — estadísticas globales y gestión de roles de usuario
 - **Responsive** — diseño adaptable a móvil desde 320px con menú hamburguesa
+- **Modo oscuro** — tema claro/oscuro conmutable y persistido (composable `useTheme`)
 
 ---
 
