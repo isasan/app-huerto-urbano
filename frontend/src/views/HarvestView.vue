@@ -3,6 +3,7 @@ import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { harvestService } from '@/services/harvestService.js'
 import { cropService } from '@/services/cropService.js'
 import { useToast } from '@/composables/useToast'
+import BaseModal from '@/components/ui/BaseModal.vue'
 
 const toast = useToast()
 const harvests = ref([])
@@ -393,79 +394,67 @@ function barWidth(total) {
     </template>
 
     <!-- ── Modal ── -->
-    <div
-      v-if="showModal"
-      class="modal d-block"
-      tabindex="-1"
-      style="background:rgba(30,20,10,0.45)"
-      role="dialog"
-      aria-modal="true"
-      :aria-label="editingId ? 'Editar cosecha' : 'Nueva cosecha'"
-      @click.self="tryCloseModal"
-      @keydown.escape="tryCloseModal"
+    <BaseModal
+      :show="showModal"
+      size="lg"
+      scrollable
+      @close="tryCloseModal"
     >
-      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title">
-              <span aria-hidden="true">{{ editingId ? '✏️' : '🧺' }}</span>
-              {{ editingId ? 'Editar cosecha' : 'Nueva cosecha' }}
-            </h2>
-            <button type="button" class="btn-close" @click="tryCloseModal" aria-label="Cerrar"></button>
+      <template #header>
+        <h2 class="modal-title">
+          <span aria-hidden="true">{{ editingId ? '✏️' : '🧺' }}</span>
+          {{ editingId ? 'Editar cosecha' : 'Nueva cosecha' }}
+        </h2>
+      </template>
+      <form @submit.prevent="handleSave">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label" for="modal-crop">Cultivo <span class="text-danger" aria-hidden="true">*</span></label>
+            <select id="modal-crop" v-model.number="form.cropId" class="form-select" required>
+              <option v-for="c in crops" :key="c.id" :value="c.id">{{ c.plantName }}</option>
+            </select>
           </div>
-          <form @submit.prevent="handleSave">
-            <div class="modal-body">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label" for="modal-crop">Cultivo <span class="text-danger" aria-hidden="true">*</span></label>
-                  <select id="modal-crop" v-model.number="form.cropId" class="form-select" required>
-                    <option v-for="c in crops" :key="c.id" :value="c.id">{{ c.plantName }}</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label" for="modal-date">Fecha <span class="text-danger" aria-hidden="true">*</span></label>
-                  <input id="modal-date" v-model="form.harvestDate" type="date" class="form-control" required />
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label" for="modal-qty">Cantidad</label>
-                  <input id="modal-qty" v-model.number="form.quantity" type="number" step="0.1" min="0" class="form-control" />
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label" for="modal-unit">Unidad</label>
-                  <select id="modal-unit" v-model="form.unit" class="form-select">
-                    <option value="kg">kg</option>
-                    <option value="g">g</option>
-                    <option value="unidades">unidades</option>
-                    <option value="litros">litros</option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label" for="modal-quality">Calidad</label>
-                  <select id="modal-quality" v-model="form.quality" class="form-select">
-                    <option value="MALA">★ Mala</option>
-                    <option value="NORMAL">★★ Normal</option>
-                    <option value="BUENA">★★★ Buena</option>
-                    <option value="EXCELENTE">★★★★ Excelente</option>
-                  </select>
-                </div>
-                <div class="col-12">
-                  <label class="form-label" for="modal-notes">Notas</label>
-                  <input id="modal-notes" v-model="form.notes" class="form-control" placeholder="Observaciones opcionales..." />
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" @click="tryCloseModal">Cancelar</button>
-              <button type="submit" class="btn btn-success" :disabled="saving">
-                <span v-if="saving" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                <i v-else class="bi bi-check-lg me-1" aria-hidden="true"></i>
-                Guardar
-              </button>
-            </div>
-          </form>
+          <div class="col-md-6">
+            <label class="form-label" for="modal-date">Fecha <span class="text-danger" aria-hidden="true">*</span></label>
+            <input id="modal-date" v-model="form.harvestDate" type="date" class="form-control" required />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="modal-qty">Cantidad</label>
+            <input id="modal-qty" v-model.number="form.quantity" type="number" step="0.1" min="0" class="form-control" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="modal-unit">Unidad</label>
+            <select id="modal-unit" v-model="form.unit" class="form-select">
+              <option value="kg">kg</option>
+              <option value="g">g</option>
+              <option value="unidades">unidades</option>
+              <option value="litros">litros</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="modal-quality">Calidad</label>
+            <select id="modal-quality" v-model="form.quality" class="form-select">
+              <option value="MALA">★ Mala</option>
+              <option value="NORMAL">★★ Normal</option>
+              <option value="BUENA">★★★ Buena</option>
+              <option value="EXCELENTE">★★★★ Excelente</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="modal-notes">Notas</label>
+            <input id="modal-notes" v-model="form.notes" class="form-control" placeholder="Observaciones opcionales..." />
+          </div>
         </div>
-      </div>
-    </div>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button type="button" class="btn btn-outline-secondary" @click="tryCloseModal">Cancelar</button>
+          <button type="submit" class="btn btn-success" :disabled="saving">
+            <span v-if="saving" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+            <i v-else class="bi bi-check-lg me-1" aria-hidden="true"></i>
+            Guardar
+          </button>
+        </div>
+      </form>
+    </BaseModal>
 
   </div>
 </template>
@@ -539,7 +528,7 @@ function barWidth(total) {
   font-size: 0.82rem;
   font-weight: 600;
   border: 1.5px solid var(--stone-300);
-  background: var(--off-white);
+  background: var(--bg-elevated);
   color: var(--text-muted);
   cursor: pointer;
   transition: all var(--t-base);
@@ -552,7 +541,7 @@ function barWidth(total) {
 .filter-pill.active {
   background: var(--green-600);
   border-color: var(--green-600);
-  color: white;
+  color: var(--text-on-accent);
 }
 
 /* Table wrap */

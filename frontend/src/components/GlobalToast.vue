@@ -62,7 +62,7 @@ const typeConfig = {
   align-items: center;
   gap: 10px;
   background: var(--toast-bg);
-  color: white;
+  color: var(--text-on-accent);
   border-radius: var(--r-full);
   padding: 10px 16px 10px 14px;
   box-shadow: 0 6px 24px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
@@ -88,7 +88,7 @@ const typeConfig = {
 .toast-close {
   background: rgba(255,255,255,0.2);
   border: none;
-  color: white;
+  color: inherit;
   border-radius: 50%;
   width: 22px;
   height: 22px;

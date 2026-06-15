@@ -123,11 +123,10 @@ async function confirmDeleteAccount() {
 
     <template v-else-if="profile">
       <!-- Cabecera avatar -->
-      <div class="card border-0 shadow-sm mb-4 overflow-hidden">
-        <div class="text-center py-4" style="background: linear-gradient(135deg, #198754, #20c997)">
+      <div class="card border-0 shadow-sm mb-4 overflow-hidden animate-up">
+        <div class="profile-hero text-center py-4">
           <div
-            class="mx-auto mb-2 d-flex align-items-center justify-content-center"
-            style="font-size:3.5rem; width:80px; height:80px; background:rgba(255,255,255,0.2); border-radius:50%; cursor:pointer"
+            class="profile-avatar mx-auto mb-2 d-flex align-items-center justify-content-center"
             role="button"
             tabindex="0"
             @click="showAvatarPicker = !showAvatarPicker"
@@ -136,13 +135,13 @@ async function confirmDeleteAccount() {
           >{{ avatar }}</div>
           <div class="text-white-50 small mb-1">Haz clic para cambiar</div>
           <div class="fw-bold text-white">{{ profile.username }}</div>
-          <div class="text-white-50 small">
-            <span :class="profile.role === 'ADMIN' ? 'badge bg-warning text-dark' : 'badge bg-light text-secondary'">{{ profile.role }}</span>
+          <div class="small mt-1">
+            <span :class="`role-pill ${profile.role === 'ADMIN' ? 'admin' : 'user'}`">{{ profile.role }}</span>
           </div>
         </div>
 
         <!-- Picker de avatar (visible al hacer clic en el emoji) -->
-        <div v-if="showAvatarPicker" class="card-body border-top bg-light">
+        <div v-if="showAvatarPicker" class="card-body border-top avatar-picker animate-in">
           <p class="small text-muted mb-2 fw-semibold">Elige tu avatar:</p>
           <div class="d-flex flex-wrap gap-2">
             <span
@@ -152,9 +151,8 @@ async function confirmDeleteAccount() {
               tabindex="0"
               @click="avatar = emoji"
               @keydown.enter="avatar = emoji"
-              class="rounded-2 p-1"
-              style="font-size:1.8rem; cursor:pointer; border: 2px solid; transition: border-color 0.15s"
-              :style="avatar === emoji ? 'border-color: #198754; background:#fff' : 'border-color: #dee2e6; background:#fff'"
+              class="avatar-option"
+              :class="{ selected: avatar === emoji }"
             >{{ emoji }}</span>
           </div>
           <p class="small text-muted mt-2 mb-0">Pulsa <strong>Guardar cambios</strong> para confirmar.</p>
@@ -175,7 +173,7 @@ async function confirmDeleteAccount() {
           <div class="row">
             <div class="col-4 text-muted">Rol</div>
             <div class="col-8">
-              <span :class="profile.role === 'ADMIN' ? 'badge bg-warning text-dark' : 'badge bg-secondary'">
+              <span :class="`role-pill ${profile.role === 'ADMIN' ? 'admin' : 'user'}`">
                 {{ profile.role }}
               </span>
             </div>
@@ -258,7 +256,7 @@ async function confirmDeleteAccount() {
       </div>
 
       <!-- Zona de peligro -->
-      <div class="card border-0 shadow-sm mb-4" style="border: 1px solid #f5c2c7 !important">
+      <div class="card border-0 shadow-sm mb-4 danger-zone">
         <div class="card-body">
           <h5 class="card-title mb-2 text-danger">
             <i class="bi bi-exclamation-triangle me-2"></i>Zona de peligro
@@ -310,3 +308,53 @@ async function confirmDeleteAccount() {
     <div v-else-if="profileError" class="alert alert-danger">{{ profileError }}</div>
   </div>
 </template>
+
+<style scoped>
+.profile-hero {
+  background: linear-gradient(135deg, var(--green-700), var(--green-500));
+}
+.profile-avatar {
+  font-size: 3.5rem;
+  width: 84px;
+  height: 84px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform var(--t-base), background var(--t-base);
+}
+.profile-avatar:hover {
+  transform: scale(1.06);
+  background: rgba(255, 255, 255, 0.3);
+}
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 12px;
+  border-radius: var(--r-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+}
+.role-pill.admin { background: var(--amber-100); color: var(--amber-700); }
+.role-pill.user  { background: var(--green-100); color: var(--green-700); }
+.avatar-picker { background: var(--bg-subtle); }
+.avatar-option {
+  font-size: 1.8rem;
+  cursor: pointer;
+  border: 2px solid var(--border-subtle);
+  background: var(--bg-card);
+  border-radius: var(--r-xs);
+  padding: 4px;
+  line-height: 1;
+  transition: border-color var(--t-fast), transform var(--t-fast);
+}
+.avatar-option:hover { transform: scale(1.1); }
+.avatar-option.selected {
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 2px var(--green-100);
+}
+.danger-zone {
+  border: 1px solid var(--red-100) !important;
+}
+</style>

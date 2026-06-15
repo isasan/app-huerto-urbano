@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import './styles/design-system.css'
+import './composables/useTheme.js' // inicializa y sincroniza el tema
 
 const app = createApp(App)
 app.use(createPinia())

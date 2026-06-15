@@ -7,11 +7,11 @@ defineEmits(['edit', 'delete'])
 </script>
 
 <template>
-  <div class="card h-100 border-0 shadow-sm">
+  <div class="card garden-card h-100 border-0 shadow-sm">
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-start">
         <h6 class="card-title mb-1">
-          <i class="bi bi-tree-fill text-success me-2"></i>{{ garden.name }}
+          <i class="bi bi-tree-fill text-success me-2 garden-icon"></i>{{ garden.name }}
         </h6>
         <div class="dropdown">
           <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
@@ -51,3 +51,20 @@ defineEmits(['edit', 'delete'])
     </div>
   </div>
 </template>
+
+<style scoped>
+.garden-card {
+  transition: transform var(--t-base), box-shadow var(--t-base);
+}
+.garden-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover) !important;
+}
+.garden-icon {
+  display: inline-block;
+  transition: transform var(--t-base);
+}
+.garden-card:hover .garden-icon {
+  transform: scale(1.15) rotate(-4deg);
+}
+</style>
