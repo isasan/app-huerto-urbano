@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/calendar/**").permitAll()
                 .requestMatchers("/api/plant-details/**").permitAll()
                 .requestMatchers("/api/weather/**").permitAll()
+                .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")

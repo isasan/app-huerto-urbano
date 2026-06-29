@@ -7,6 +7,11 @@ updates:
       day: monday
     target-branch: develop
     open-pull-requests-limit: 5
+    groups:
+      backend-minor-patch:
+        update-types:
+          - minor
+          - patch
 
   - package-ecosystem: npm
     directory: /frontend
@@ -15,6 +20,11 @@ updates:
       day: monday
     target-branch: develop
     open-pull-requests-limit: 5
+    groups:
+      frontend-minor-patch:
+        update-types:
+          - minor
+          - patch
 
   - package-ecosystem: github-actions
     directory: /
@@ -23,3 +33,8 @@ updates:
       day: monday
     target-branch: develop
     open-pull-requests-limit: 5
+    groups:
+      actions-minor-patch:
+        update-types:
+          - minor
+          - patch
