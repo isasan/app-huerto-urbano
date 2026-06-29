@@ -24,6 +24,6 @@
     "eslint-plugin-vue": "^10.9.2",
     "eslint-plugin-vuejs-accessibility": "^2.5.0",
     "globals": "^17.6.0",
-    "vite": "^8.0.16"
+    "vite": "^8.1.0"
   }
 }
