@@ -61,7 +61,7 @@ Aplicación fullstack para gestionar huertos urbanos domésticos. Permite contro
 
 - **Java 21+** — [descargar](https://adoptium.net/) (requerido por Spring Boot 4)
 - **Maven 3.8+** — incluido en la mayoría de IDEs, o instalar desde [maven.apache.org](https://maven.apache.org/)
-- **Node.js 20+** y **npm 9+** — [descargar](https://nodejs.org/) (requerido por Vite 8)
+- **Node.js 20+** y **pnpm 9+** — [descargar Node](https://nodejs.org/) e [instalar pnpm](https://pnpm.io/installation) (requerido por Vite 8)
 
 ---
 
@@ -109,14 +109,14 @@ El servidor arranca en `http://localhost:8080`.
 
 ```bash
 cd ../frontend
-npm install
+pnpm install
 ```
 
 ### 5. Arrancar el frontend
 
 ```bash
 # Desde la carpeta frontend/
-npm run dev
+pnpm dev
 ```
 
 El dev server arranca en `http://localhost:5173`.  
