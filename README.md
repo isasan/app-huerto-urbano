@@ -154,6 +154,10 @@ Documentación interactiva de la API REST en `http://localhost:8080/swagger-ui.h
 
 Usa el botón **Authorize** para pegar tu Bearer token y probar endpoints protegidos.
 
+### Health check
+
+Endpoint público de estado expuesto por Spring Boot Actuator en `http://localhost:8080/actuator/health`. Devuelve `{"status":"UP"}` sin necesidad de autenticación; el resto de endpoints de Actuator no están expuestos.
+
 ---
 
 ## CI/CD
@@ -196,7 +200,7 @@ Al mergear a `main`, el workflow Release crea un tag semver automáticamente seg
 
 ### Dependabot
 
-PRs automáticas de actualización de dependencias Maven, npm y GitHub Actions cada lunes, dirigidas a `develop` para pasar por el CI antes de llegar a `main`.
+PRs automáticas de actualización de dependencias Maven, npm y GitHub Actions cada lunes, dirigidas a `develop` para pasar por el CI antes de llegar a `main`. Las actualizaciones *minor* y *patch* se agrupan en una sola PR por ecosistema; las *major* se abren individualmente para revisarlas por separado.
 
 ---
 
