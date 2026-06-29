@@ -162,7 +162,7 @@ Endpoint público de estado expuesto por Spring Boot Actuator en `http://localho
 
 ## CI/CD
 
-El proyecto usa GitHub Actions con tres workflows y Dependabot para automatizar calidad, versionado y actualización de dependencias.
+El proyecto usa GitHub Actions con cuatro workflows (CI, Accessibility, Quality y Release) y Dependabot para automatizar calidad, versionado y actualización de dependencias.
 
 ### Estrategia de ramas
 
@@ -176,16 +176,20 @@ feat/* fix/* chore/* ── ramas temporales, PR a develop
 
 | Job | Qué verifica |
 |---|---|
-| Backend — Maven tests | Compila y ejecuta tests con `mvn test` |
+| Backend — Maven tests | Compila y ejecuta tests con `mvn verify` (incluye cobertura JaCoCo y subida a Codecov) |
 | Frontend — Vite build | Verifica que el bundle compila sin errores |
 | Frontend — ESLint | Linting de componentes Vue 3 (flat config) |
 | Commitlint | Formato Conventional Commits en todos los commits del PR |
 
-Los cuatro jobs deben pasar en verde para poder hacer merge.
+### Workflow Accessibility — en cada push y PR a `develop` o `main`
+
+Ejecuta **Lighthouse CI** sobre el build del frontend para validar accesibilidad (WCAG 2.1 AA).
+
+Todos los jobs anteriores deben pasar en verde para poder hacer merge.
 
 ### Workflow Quality — cada lunes o manualmente
 
-Genera un informe de cobertura de tests (JaCoCo) descargable desde **Actions → Quality → artefactos**. El informe se activa cuando haya tests escritos en el backend.
+Ejecuta `mvn verify` y publica el informe de cobertura de tests (JaCoCo) como artefacto descargable desde **Actions → Quality → artefactos**.
 
 ### Versionado semántico automático
 
@@ -210,7 +214,7 @@ PRs automáticas de actualización de dependencias Maven, npm y GitHub Actions c
 huertoapp/
 ├── backend/
 │   └── src/main/java/com/huertoapp/
-│       ├── model/           # Entidades JPA: User, Garden, Plot, Crop, Task, HarvestLog
+│       ├── model/           # Entidades JPA: User, Garden, Plot, Crop, Task, HarvestLog, CalendarPlant, PlantDetail
 │       ├── repository/      # Spring Data JPA repositories
 │       ├── service/         # Lógica de negocio + control de propiedad
 │       ├── controller/      # REST controllers (@RestController)
@@ -218,7 +222,7 @@ huertoapp/
 │       │   ├── request/     # DTOs de entrada
 │       │   └── response/    # DTOs de salida
 │       ├── security/        # JWT provider + filter + UserDetailsService
-│       ├── config/          # SecurityConfig, OpenApiConfig, WebClientConfig
+│       ├── config/          # SecurityConfig, OpenApiConfig, WebClientConfig, JwtConfig
 │       ├── exception/       # GlobalExceptionHandler
 │       └── data/            # SeedingCalendarData (datos estáticos en memoria)
 └── frontend/
@@ -228,7 +232,7 @@ huertoapp/
         │   ├── gardens/     # GardenCard, GardenForm
         │   ├── crops/       # CropList, CropForm
         │   ├── tasks/       # TaskBoard, TaskItem
-        │   ├── calendar/    # SeedingCalendar, PlantCard
+        │   ├── calendar/    # SeedingCalendar, PlantCard, PlantDetailModal
         │   ├── weather/     # WeatherWidget
         │   ├── ui/          # BaseModal
         │   └── GlobalToast.vue
@@ -249,7 +253,7 @@ huertoapp/
 - **Tareas** — tablero por tipo (Riego, Fertilizar, Podar, Tratar, Otro); filtros y ordenación por fecha
 - **Cosechas** — historial con cantidad, unidad y calificación de calidad; estadísticas por planta
 - **Clima** — widget con temperatura, humedad y viento vía Open-Meteo; caché de 30 min
-- **Calendario de siembra** — datos para 12 plantas × 2 hemisferios sin base de datos
+- **Calendario de siembra** — base estática de 12 plantas × 2 hemisferios, combinada con plantas adicionales gestionables desde el panel de administración (persistidas en BD)
 - **Dashboard** — resumen en tiempo real con tareas del día, cultivos listos y últimas cosechas
 - **Panel de administración** — estadísticas globales y gestión de roles de usuario
 - **Responsive** — diseño adaptable a móvil desde 320px con menú hamburguesa
