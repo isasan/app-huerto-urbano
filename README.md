@@ -80,11 +80,20 @@ cd app-huerto-urbano
 cd backend
 ```
 
-Revisa `src/main/resources/application.properties`. Los valores por defecto funcionan sin ningún cambio:
+En local no necesitas configurar nada: por defecto se activa el perfil `dev` (`application-dev.properties`), que habilita la consola H2, Swagger UI y un secreto JWT solo para desarrollo.
+
+En **producción** activa el perfil `prod` y define las variables de entorno. La app **no arranca** si falta `JWT_SECRET`:
+
+```bash
+SPRING_PROFILES_ACTIVE=prod
+JWT_SECRET=<cadena aleatoria de al menos 32 caracteres>
+DB_PASSWORD=<contraseña de la base de datos>   # opcional
+```
+
+Fuera del perfil `dev`, la consola H2, Swagger UI y `/api-docs` están desactivados.
 
 ```properties
-# JWT (24 h — cambiar en producción)
-app.jwt.secret=huertoapp-secret-key-change-in-production-min-256-bits
+# JWT (24 h)
 app.jwt.expiration=86400000
 
 # Clima (Open-Meteo — sin API key)
@@ -93,7 +102,6 @@ app.weather.geocoding-url=https://geocoding-api.open-meteo.com/v1
 
 # H2
 spring.datasource.url=jdbc:h2:file:./data/huertoapp
-spring.h2.console.enabled=true
 ```
 
 ### 3. Arrancar el backend
