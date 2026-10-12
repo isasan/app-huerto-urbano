@@ -146,9 +146,11 @@ El widget de clima del dashboard se activa automáticamente si configuras tu ciu
 
 ## Herramientas de desarrollo
 
+> La consola H2 y Swagger UI solo están activas en el perfil `dev` (el de por defecto en local). En `prod` están desactivadas.
+
 ### H2 Console
 
-Accesible en `http://localhost:8080/h2-console` con el servidor arrancado.
+Accesible en `http://localhost:8080/h2-console` con el servidor arrancado en perfil `dev`.
 
 | Campo | Valor |
 |-------|-------|
@@ -158,7 +160,7 @@ Accesible en `http://localhost:8080/h2-console` con el servidor arrancado.
 
 ### Swagger UI
 
-Documentación interactiva de la API REST en `http://localhost:8080/swagger-ui.html`.
+Documentación interactiva de la API REST en `http://localhost:8080/swagger-ui.html` (solo perfil `dev`).
 
 Usa el botón **Authorize** para pegar tu Bearer token y probar endpoints protegidos.
 
@@ -170,15 +172,17 @@ Endpoint público de estado expuesto por Spring Boot Actuator en `http://localho
 
 ## CI/CD
 
-El proyecto usa GitHub Actions con cuatro workflows (CI, Accessibility, Quality y Release) y Dependabot para automatizar calidad, versionado y actualización de dependencias.
+El proyecto usa GitHub Actions con cinco workflows (CI, Accessibility, Quality, Release y Sync develop) y Dependabot para automatizar calidad, versionado y actualización de dependencias.
 
 ### Estrategia de ramas
 
 ```
-main ──── protegida, solo via PR, dispara release automático
+main ──── protegida, solo via PR desde develop, dispara release automático
 develop ── integración, destino de features y fixes
 feat/* fix/* chore/* ── ramas temporales, PR a develop
 ```
+
+Flujo: `feat/*` → `develop` → `main` (release manual mediante PR). Tras cada release, el workflow **Sync develop** vuelve a mergear `main` en `develop` para que ambas ramas compartan historial.
 
 ### Workflow CI — en cada PR a `develop` o `main`
 
@@ -198,6 +202,10 @@ Todos los jobs anteriores deben pasar en verde para poder hacer merge.
 ### Workflow Quality — cada lunes o manualmente
 
 Ejecuta `mvn verify` y publica el informe de cobertura de tests (JaCoCo) como artefacto descargable desde **Actions → Quality → artefactos**.
+
+### Workflow Sync develop — en cada push a `main`
+
+Mergea `main` dentro de `develop` tras un release (el merge commit del PR `develop → main`), evitando que `develop` quede por detrás. Si `develop` ya contiene `main`, no hace nada.
 
 ### Versionado semántico automático
 
@@ -325,5 +333,3 @@ Para producción se recomienda externalizar la caché con **Redis** usando `@Cac
 ## Licencia
 
 [MIT](LICENSE) — libre para uso, modificación y distribución.
-
-<!-- CI workflow test -->
