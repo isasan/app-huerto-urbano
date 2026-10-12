@@ -1,0 +1,38 @@
+name: Sync develop with main
+
+# After a release (develop → main merge commit), bring main back into develop
+# so both branches share the same history.
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: sync-develop
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Merge main into develop
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Merge main into develop
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git merge-base --is-ancestor origin/main HEAD; then
+            echo "develop already contains main, nothing to do."
+            exit 0
+          fi
+
+          git merge origin/main --no-edit
+          git push origin develop
