@@ -50,7 +50,7 @@ public class TaskService {
 
         Crop crop = null;
         if (request.getCropId() != null) {
-            crop = cropRepository.findById(request.getCropId())
+            crop = cropRepository.findByIdAndPlotGardenUserId(request.getCropId(), user.getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Cultivo", request.getCropId()));
         }
 

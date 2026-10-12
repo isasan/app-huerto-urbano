@@ -13,6 +13,7 @@ public interface CropRepository extends JpaRepository<Crop, Long> {
     List<Crop> findByPlotGardenId(Long gardenId);
     List<Crop> findByPlotGardenUserId(Long userId);
     Optional<Crop> findByIdAndPlotId(Long id, Long plotId);
+    Optional<Crop> findByIdAndPlotGardenUserId(Long id, Long userId);
     List<Crop> findByPlotGardenUserIdAndStatus(Long userId, Crop.Status status);
     long countByPlotGardenUserIdAndStatusNot(Long userId, Crop.Status status);
 }
